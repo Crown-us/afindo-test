@@ -8,7 +8,9 @@
             </x-slot>
             @if ($course->lessons->isNotEmpty())
                 <x-slot name="actions">
-                    <x-link-button :href="route('courses.lessons.show', [$course, $course->lessons->first()])">Mulai belajar</x-link-button>
+                    <x-link-button :href="route('courses.lessons.show', [$course, $course->lessons->first()])">
+                        @auth Mulai belajar @else Masuk untuk mulai belajar @endauth
+                    </x-link-button>
                 </x-slot>
             @endif
         </x-page-header>
@@ -19,7 +21,12 @@
         </x-card>
 
         <section aria-labelledby="lessons-heading" class="space-y-3">
-            <h2 id="lessons-heading" class="text-lg font-semibold text-gray-900">Daftar lesson</h2>
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 id="lessons-heading" class="text-lg font-semibold text-gray-900">Daftar lesson</h2>
+                @guest
+                    <p class="text-sm text-gray-500">Masuk atau daftar untuk menonton video.</p>
+                @endguest
+            </div>
             <x-card class="overflow-hidden">
                 <ol class="divide-y divide-gray-100">
                     @forelse ($course->lessons as $lesson)

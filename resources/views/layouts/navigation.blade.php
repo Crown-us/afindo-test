@@ -1,8 +1,10 @@
 @php
-    // Menu utama berbeda per role: [nama route, label, pola route aktif]
-    $navItems = Auth::user()->isAdmin()
-        ? [['admin.dashboard', 'Dashboard', 'admin.dashboard'], ['admin.courses.index', 'Kelola Course', 'admin.courses.*']]
-        : [['courses.index', 'Katalog Course', 'courses.*']];
+    // Menu utama: [nama route, label, pola route aktif]. Admin mendapat menu kelola tambahan.
+    $navItems = [['home', 'Beranda', 'home'], ['courses.index', 'Katalog Course', 'courses.*']];
+    if (Auth::user()?->isAdmin()) {
+        $navItems[] = ['admin.dashboard', 'Dashboard Admin', 'admin.dashboard'];
+        $navItems[] = ['admin.courses.index', 'Kelola Course', 'admin.courses.*'];
+    }
 @endphp
 
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
@@ -12,7 +14,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <x-brand />
                     </a>
                 </div>
@@ -26,6 +28,12 @@
             </div>
 
             <!-- Settings Dropdown -->
+            @guest
+                <div class="hidden sm:flex sm:items-center sm:gap-2 sm:ms-6">
+                    <x-link-button variant="secondary" :href="route('login')">Masuk</x-link-button>
+                    <x-link-button :href="route('register')">Daftar</x-link-button>
+                </div>
+            @else
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -61,6 +69,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endguest
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -83,6 +92,12 @@
         </div>
 
         <!-- Responsive Settings Options -->
+        @guest
+            <div class="flex gap-2 border-t border-gray-200 px-4 py-4">
+                <x-link-button variant="secondary" :href="route('login')" class="flex-1">Masuk</x-link-button>
+                <x-link-button :href="route('register')" class="flex-1">Daftar</x-link-button>
+            </div>
+        @else
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
@@ -106,5 +121,6 @@
                 </form>
             </div>
         </div>
+        @endguest
     </div>
 </nav>

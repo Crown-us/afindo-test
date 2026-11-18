@@ -1,13 +1,24 @@
 <?php
 
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonVideoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/dashboard');
+// ---------- Publik (guest & user login) ----------
+Route::get('/', HomeController::class)->name('home');
+Route::get('/courses', [Student\CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course}', [Student\CourseController::class, 'show'])->name('courses.show');
+
+// Menonton lesson wajib login; setelah login user kembali ke lesson ini (redirect intended).
+// scopeBindings: lesson harus milik course di URL, selain itu 404.
+Route::get('/courses/{course}/lessons/{lesson}', [Student\LessonController::class, 'show'])
+    ->middleware('auth')
+    ->scopeBindings()
+    ->name('courses.lessons.show');
 
 // Breeze mengarahkan ke sini setelah login/register; teruskan sesuai role.
 Route::get('/dashboard', fn (Request $request) => redirect()->route($request->user()->isAdmin() ? 'admin.dashboard' : 'courses.index'))
@@ -37,16 +48,6 @@ Route::middleware(['auth', 'role:admin'])
 Route::get('/lessons/{lesson}/video', [LessonVideoController::class, 'show'])
     ->middleware('auth')
     ->name('lessons.video');
-
-// ---------- Area Student ----------
-Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/courses', [Student\CourseController::class, 'index'])->name('courses.index');
-    Route::get('/courses/{course}', [Student\CourseController::class, 'show'])->name('courses.show');
-    // scopeBindings: lesson harus milik course di URL, selain itu 404.
-    Route::get('/courses/{course}/lessons/{lesson}', [Student\LessonController::class, 'show'])
-        ->scopeBindings()
-        ->name('courses.lessons.show');
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

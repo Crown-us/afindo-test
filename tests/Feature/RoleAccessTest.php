@@ -3,18 +3,22 @@
 use App\Enums\UserRole;
 use App\Models\User;
 
-test('guest diarahkan ke login saat membuka area admin maupun student', function () {
-    $this->get('/')->assertRedirect('/dashboard');
+test('guest bisa membuka beranda & katalog, tapi diarahkan ke login untuk dashboard dan admin', function () {
+    $this->get('/')->assertOk()->assertSee('Daftar gratis');
+    $this->get('/courses')->assertOk();
     $this->get('/dashboard')->assertRedirect('/login');
     $this->get('/admin')->assertRedirect('/login');
-    $this->get('/courses')->assertRedirect('/login');
 });
 
-test('admin bisa membuka area admin tapi tidak area student', function () {
+test('user yang sudah login tetap bisa kembali ke beranda', function () {
+    $this->actingAs(User::factory()->create())->get('/')->assertOk()->assertDontSee('Daftar gratis');
+});
+
+test('admin bisa membuka area admin dan halaman publik', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)->get('/admin')->assertOk();
-    $this->actingAs($admin)->get('/courses')->assertForbidden();
+    $this->actingAs($admin)->get('/courses')->assertOk()->assertSee('Kelola Course');
 });
 
 test('student bisa membuka katalog tapi ditolak dari area admin', function () {

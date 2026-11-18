@@ -51,6 +51,17 @@ test('halaman lesson menampilkan navigasi sebelumnya dan selanjutnya', function 
         ->assertSee(route('courses.lessons.show', [$course, $third]));
 });
 
+test('guest melihat detail course, tapi membuka lesson diarahkan ke login lalu kembali ke lesson', function () {
+    $course = Course::factory()->published()->create();
+    $lesson = Lesson::factory()->for($course)->create(['title' => 'Lesson Publik']);
+    $lessonUrl = route('courses.lessons.show', [$course, $lesson]);
+
+    $this->get(route('courses.show', $course))->assertOk()->assertSee('Lesson Publik')->assertSee('Masuk untuk mulai belajar');
+    $this->get($lessonUrl)->assertRedirect('/login');
+
+    $this->post('/login', ['email' => $this->student->email, 'password' => 'password'])->assertRedirect($lessonUrl);
+});
+
 test('lesson dari course lain di URL menghasilkan 404', function () {
     $course = Course::factory()->published()->create();
     $otherLesson = Lesson::factory()->for(Course::factory()->published())->create();
