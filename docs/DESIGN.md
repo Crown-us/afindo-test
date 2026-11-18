@@ -361,4 +361,4 @@ Komponen Blade yang dipakai ulang: `x-card`, `x-badge`, `x-course-card`, `x-cour
 - **Status `uploading` bisa tertinggal** jika proses PHP mati di tengah penyimpanan; admin cukup mengunggah ulang.
 - **`controlsList="nodownload"` bukan DRM.** Video tetap bisa diambil oleh user yang sudah berhak menontonnya (mis. lewat developer tools); proteksi yang ada adalah otorisasi akses.
 - **Verifikasi email belum diaktifkan** (User tidak mengimplementasikan `MustVerifyEmail`); fitur bawaan Breeze tetap ada di kode.
-- **Pengujian otomatis** memakai SQLite in-memory; migrasi ditulis dengan tipe kolom standar agar kompatibel dengan MySQL.
+- **Pengujian otomatis** default memakai SQLite in-memory agar cepat. Seluruh migrasi, seeder, dan 63 test juga sudah dijalankan di MySQL 8.4 dan lolos.

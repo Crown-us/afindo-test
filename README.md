@@ -122,7 +122,7 @@ php artisan migrate:fresh --seed
 php artisan test
 ```
 
-Test memakai SQLite in-memory (lihat `phpunit.xml`), jadi tidak menyentuh database lokal. Cakupan utama: akses per role, CRUD course & lesson, reorder, upload/ganti/hapus video & thumbnail, streaming video (termasuk HTTP Range), dan alur guest → login → kembali ke lesson.
+Test memakai SQLite in-memory (lihat `phpunit.xml`), jadi tidak menyentuh database lokal. Untuk menjalankannya di MySQL, buat database kosong (mis. `afindo_elearning_test`) lalu set `DB_CONNECTION=mysql` dan `DB_DATABASE=afindo_elearning_test` sebagai environment variable sebelum `php artisan test`; seluruh test sudah diverifikasi lolos di MySQL 8.4. Cakupan utama: akses per role, CRUD course & lesson, reorder, upload/ganti/hapus video & thumbnail, streaming video (termasuk HTTP Range), dan alur guest → login → kembali ke lesson.
 
 ## Struktur singkat
 
