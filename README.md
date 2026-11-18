@@ -20,7 +20,7 @@ Admin mengelola course dan lesson berupa video; student menjelajahi katalog lalu
 - Player video dengan navigasi lesson sebelumnya/berikutnya dan daftar materi.
 - Video disimpan di storage **private** dan hanya bisa diputar lewat route yang memeriksa otorisasi (course draft tidak bisa diakses student).
 
-Detail rancangan (system design, ERD, flowchart/sequence, UI/UX, asumsi, keterbatasan): **[docs/DESIGN.md](docs/DESIGN.md)**.
+Detail rancangan (system design, ERD, flowchart/sequence, UI/UX, asumsi, keterbatasan): **[docs/Dokumen-Desain-Afindo-Learn.pdf](docs/Dokumen-Desain-Afindo-Learn.pdf)** (versi PDF siap baca) atau [docs/DESIGN.md](docs/DESIGN.md) (sumber Markdown, diagram Mermaid tampil di GitHub).
 
 ## Teknologi
 

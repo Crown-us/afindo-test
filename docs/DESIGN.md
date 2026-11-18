@@ -46,35 +46,30 @@ Tidak dipakai (sesuai brief, tidak wajib): Redis, queue worker, FFmpeg/transcodi
 ## 3. System design
 
 ```mermaid
-flowchart LR
-    subgraph Browser
-        B1[Halaman Blade]
-        B2[Alpine.js<br/>upload XHR, drag & drop]
-    end
+flowchart TB
+    U["Browser<br/>Halaman Blade + Alpine.js<br/>(upload XHR, drag & drop)"]
 
     subgraph Laravel
         R[routes/web.php]
-        M[Middleware<br/>auth, role:admin]
+        M["Middleware<br/>auth, role:admin"]
         C[Controller]
-        V[FormRequest / validate]
-        P[LessonPolicy]
-        E[(Eloquent Model<br/>User, Course, Lesson)]
+        V["FormRequest<br/>validasi input"]
+        P["LessonPolicy<br/>otorisasi video"]
+        E["Eloquent Model<br/>User, Course, Lesson"]
     end
 
     DB[(MySQL)]
-    SP[(storage/app/private<br/>video lesson)]
-    SU[(storage/app/public<br/>thumbnail course)]
+    SP[("storage/app/private<br/>video lesson")]
+    SU[("storage/app/public<br/>thumbnail course")]
 
-    B1 -- HTTP GET/POST --> R
-    B2 -- XHR / fetch JSON --> R
+    U -->|"HTTP / XHR / fetch JSON"| R
     R --> M --> C
     C --> V
     C --> P
     C --> E --> DB
-    C -- simpan / stream video --> SP
-    C -- simpan thumbnail --> SU
-    SU -. diakses langsung lewat /storage .-> B1
-    SP -. hanya lewat route ber-otorisasi .-> C
+    C -->|"simpan & stream video<br/>(hanya lewat route ber-otorisasi)"| SP
+    C -->|simpan thumbnail| SU
+    SU -.->|"dibaca langsung lewat URL /storage"| U
 ```
 
 Poin penting:
@@ -91,7 +86,7 @@ app/
 ├── Http/
 │   ├── Controllers/
 │   │   ├── Admin/             DashboardController, CourseController, LessonController
-│   │   ├── Student/           CourseController (katalog & detail), LessonController (player)
+│   │   ├── Student/           katalog, detail course, player lesson
 │   │   ├── HomeController     beranda
 │   │   └── LessonVideoController  upload (admin) & streaming (admin/student)
 │   ├── Middleware/EnsureUserHasRole   role:admin
