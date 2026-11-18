@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::view('/', 'admin.dashboard')->name('dashboard');
+        Route::get('/', Admin\DashboardController::class)->name('dashboard');
+
+        Route::resource('courses', Admin\CourseController::class);
+
+        // Lesson: create/store di bawah course, sisanya langsung by id (shallow).
+        Route::patch('courses/{course}/lessons/reorder', [Admin\LessonController::class, 'reorder'])
+            ->name('courses.lessons.reorder');
+        Route::resource('courses.lessons', Admin\LessonController::class)
+            ->only(['create', 'store', 'edit', 'update', 'destroy'])
+            ->shallow();
     });
 
 // ---------- Area Student ----------

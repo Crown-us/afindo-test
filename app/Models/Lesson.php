@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['title', 'description'])]
 class Lesson extends Model
@@ -39,6 +40,23 @@ class Lesson extends Model
                 $lesson->position = (int) static::where('course_id', $lesson->course_id)->max('position') + 1;
             }
         });
+
+        static::deleted(function (Lesson $lesson) {
+            $lesson->deleteVideoFile();
+        });
+    }
+
+    /** Folder penyimpanan video lesson ini, mis. videos/course-3/lesson-12. */
+    public function videoDirectory(): string
+    {
+        return "videos/course-{$this->course_id}/lesson-{$this->id}";
+    }
+
+    public function deleteVideoFile(): void
+    {
+        if (filled($this->video_path)) {
+            Storage::disk(self::VIDEO_DISK)->delete($this->video_path);
+        }
     }
 
     /** @return BelongsTo<Course, $this> */

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable(['title', 'slug', 'description', 'status'])]
@@ -44,6 +46,39 @@ class Course extends Model
                     : null;
             }
         });
+
+        // Lesson ikut terhapus lewat FK cascade (tanpa event per lesson),
+        // jadi folder video milik course dibersihkan di sini.
+        static::deleted(function (Course $course) {
+            Storage::disk(Lesson::VIDEO_DISK)->deleteDirectory($course->videoDirectory());
+        });
+    }
+
+    /** Folder penyimpanan video untuk seluruh lesson di course ini. */
+    public function videoDirectory(): string
+    {
+        return "videos/course-{$this->id}";
+    }
+
+    /**
+     * Simpan urutan lesson sesuai daftar id (indeks 0 => posisi 1).
+     *
+     * @param  array<int, int|string>  $lessonIds
+     */
+    public function reorderLessons(array $lessonIds): void
+    {
+        DB::transaction(function () use ($lessonIds) {
+            foreach (array_values($lessonIds) as $index => $id) {
+                // Query tanpa orderBy dari relasi lessons(): UPDATE ... ORDER BY tidak didukung SQLite.
+                Lesson::where('course_id', $this->id)->whereKey($id)->update(['position' => $index + 1]);
+            }
+        });
+    }
+
+    /** Rapatkan kembali posisi (1..n) setelah ada lesson yang dihapus. */
+    public function normalizeLessonPositions(): void
+    {
+        $this->reorderLessons($this->lessons()->pluck('id')->all());
     }
 
     public static function uniqueSlug(string $title, ?int $ignoreId = null): string
