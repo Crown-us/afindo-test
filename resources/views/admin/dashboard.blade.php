@@ -6,16 +6,11 @@
             </x-slot>
         </x-page-header>
 
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            @foreach ([
-                ['Course published', $stats['published'], 'text-emerald-600'],
-                ['Course draft', $stats['draft'], 'text-gray-600'],
-                ['Total lesson', $stats['lessons'], 'text-gray-900'],
-                ['Video siap putar', $stats['videos_ready'].' / '.$stats['lessons'], 'text-brand-700'],
-            ] as [$label, $value, $color])
+        <div class="grid gap-4 sm:grid-cols-3">
+            @foreach (['Total course' => $courseCount, 'Total lesson' => $lessonCount, 'Video siap putar' => "$readyCount / $lessonCount"] as $label => $value)
                 <x-card class="p-5">
                     <p class="text-sm font-medium text-gray-500">{{ $label }}</p>
-                    <p class="mt-2 text-3xl font-bold tracking-tight {{ $color }}">{{ $value }}</p>
+                    <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900">{{ $value }}</p>
                 </x-card>
             @endforeach
         </div>
@@ -34,7 +29,7 @@
                                     <p class="truncate font-medium text-gray-900">{{ $course->title }}</p>
                                     <p class="text-xs text-gray-500">{{ $course->lessons_count }} lesson · diperbarui {{ $course->updated_at->diffForHumans() }}</p>
                                 </div>
-                                <x-course-status-badge :status="$course->status" />
+                                <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
                             </a>
                         </li>
                     @empty
@@ -56,7 +51,7 @@
                                     <p class="truncate text-sm font-medium text-gray-900">{{ $lesson->title }}</p>
                                     <p class="truncate text-xs text-gray-500">{{ $lesson->course->title }}</p>
                                 </div>
-                                <x-video-status-badge :status="$lesson->video_status" />
+                                <x-badge :color="$lesson->video_status->color()">{{ $lesson->video_status->label() }}</x-badge>
                             </a>
                         </li>
                     @empty

@@ -9,9 +9,6 @@ enum UserRole: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Admin => 'Admin',
-            self::Student => 'Student',
-        };
+        return ucfirst($this->value);
     }
 }

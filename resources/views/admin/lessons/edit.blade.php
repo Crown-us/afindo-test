@@ -14,7 +14,7 @@
         <section aria-labelledby="video-heading" class="space-y-3">
             <div class="flex items-center justify-between gap-3">
                 <h2 id="video-heading" class="text-lg font-semibold text-gray-900">Video</h2>
-                <x-video-status-badge :status="$lesson->video_status" />
+                <x-badge :color="$lesson->video_status->color()">{{ $lesson->video_status->label() }}</x-badge>
             </div>
             <x-card class="p-6">
                 {{-- Diisi pada tahap fitur upload video (XHR + progress). --}}

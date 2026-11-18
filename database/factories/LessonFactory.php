@@ -33,12 +33,4 @@ class LessonFactory extends Factory
             'video_status' => VideoStatus::Ready,
         ]);
     }
-
-    public function failed(string $error = 'Upload gagal'): static
-    {
-        return $this->state(fn () => [
-            'video_status' => VideoStatus::Failed,
-            'video_error' => $error,
-        ]);
-    }
 }

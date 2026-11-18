@@ -5,14 +5,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (Request $request) {
-    return $request->user()
-        ? redirect($request->user()->homeRoute())
-        : view('welcome');
-})->name('home');
+Route::view('/', 'welcome')->name('home');
 
-// Titik masuk setelah login/register (dipakai Breeze). Diarahkan ke halaman awal sesuai role.
-Route::get('/dashboard', fn (Request $request) => redirect($request->user()->homeRoute()))
+// Breeze mengarahkan ke sini setelah login/register; teruskan sesuai role.
+Route::get('/dashboard', fn (Request $request) => redirect()->route($request->user()->isAdmin() ? 'admin.dashboard' : 'courses.index'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

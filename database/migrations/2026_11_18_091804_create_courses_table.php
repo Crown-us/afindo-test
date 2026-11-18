@@ -12,10 +12,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
-            $table->string('slug')->unique();
             $table->text('description');
             $table->string('status', 20)->default('draft')->index();
-            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }

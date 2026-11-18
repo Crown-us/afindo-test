@@ -3,12 +3,10 @@
 namespace App\Enums;
 
 /**
- * Siklus hidup video sebuah lesson.
- *
- * pending   -> lesson dibuat, belum ada video
- * uploading -> request upload sedang diproses server
- * ready     -> file tersimpan & tervalidasi, siap diputar
- * failed    -> upload/validasi gagal, admin bisa upload ulang
+ * pending   -> lesson baru, belum ada video
+ * uploading -> server sedang menerima/menyimpan file
+ * ready     -> video tersimpan dan bisa diputar
+ * failed    -> upload gagal, admin bisa unggah ulang
  */
 enum VideoStatus: string
 {
@@ -27,8 +25,14 @@ enum VideoStatus: string
         };
     }
 
-    public function isPlayable(): bool
+    /** Warna badge di UI (lihat komponen x-badge). */
+    public function color(): string
     {
-        return $this === self::Ready;
+        return match ($this) {
+            self::Ready => 'green',
+            self::Uploading => 'blue',
+            self::Failed => 'red',
+            self::Pending => 'amber',
+        };
     }
 }

@@ -35,7 +35,7 @@ test('admin bisa membuat course', function () {
         'status' => 'published',
     ]);
 
-    $course = Course::firstWhere('slug', 'pengenalan-docker');
+    $course = Course::firstWhere('title', 'Pengenalan Docker');
     expect($course)->not->toBeNull()
         ->and($course->title)->toBe('Pengenalan Docker')
         ->and($course->status)->toBe(CourseStatus::Published)
@@ -67,15 +67,14 @@ test('admin bisa mengubah course dan halaman edit/detail tampil', function () {
 
     $course->refresh();
     expect($course->title)->toBe('Judul Baru')
-        ->and($course->isPublished())->toBeTrue()
-        ->and($course->slug)->not->toBe('judul-baru'); // slug tetap agar URL lama tidak rusak
+        ->and($course->isPublished())->toBeTrue();
 });
 
 test('menghapus course ikut menghapus lesson dan folder videonya', function () {
     Storage::fake('local');
     $course = Course::factory()->create();
     $lesson = Lesson::factory()->for($course)->create();
-    $path = $lesson->videoDirectory().'/video.mp4';
+    $path = "videos/course-{$course->id}/lesson-{$lesson->id}/video.mp4";
     Storage::disk('local')->put($path, 'dummy');
 
     $this->actingAs($this->admin)->delete(route('admin.courses.destroy', $course))

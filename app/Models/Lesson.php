@@ -16,7 +16,7 @@ class Lesson extends Model
     /** @use HasFactory<LessonFactory> */
     use HasFactory;
 
-    /** Disk tempat file video disimpan (private, tidak bisa diakses langsung lewat URL). */
+    /** Disk private: file tidak bisa diakses langsung lewat URL. */
     public const VIDEO_DISK = 'local';
 
     protected $attributes = [
@@ -25,48 +25,26 @@ class Lesson extends Model
 
     protected function casts(): array
     {
-        return [
-            'position' => 'integer',
-            'video_size' => 'integer',
-            'video_status' => VideoStatus::class,
-        ];
+        return ['video_status' => VideoStatus::class];
     }
 
     protected static function booted(): void
     {
-        // Lesson baru otomatis ditaruh di urutan paling akhir course-nya.
+        // Lesson baru otomatis ditaruh di urutan paling akhir.
         static::creating(function (Lesson $lesson) {
-            if ($lesson->position === null) {
-                $lesson->position = (int) static::where('course_id', $lesson->course_id)->max('position') + 1;
-            }
+            $lesson->position ??= Lesson::where('course_id', $lesson->course_id)->max('position') + 1;
         });
 
         static::deleted(function (Lesson $lesson) {
-            $lesson->deleteVideoFile();
+            if ($lesson->video_path) {
+                Storage::disk(self::VIDEO_DISK)->delete($lesson->video_path);
+            }
         });
-    }
-
-    /** Folder penyimpanan video lesson ini, mis. videos/course-3/lesson-12. */
-    public function videoDirectory(): string
-    {
-        return "videos/course-{$this->course_id}/lesson-{$this->id}";
-    }
-
-    public function deleteVideoFile(): void
-    {
-        if (filled($this->video_path)) {
-            Storage::disk(self::VIDEO_DISK)->delete($this->video_path);
-        }
     }
 
     /** @return BelongsTo<Course, $this> */
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
-    }
-
-    public function hasPlayableVideo(): bool
-    {
-        return $this->video_status->isPlayable() && filled($this->video_path);
     }
 }

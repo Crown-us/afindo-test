@@ -9,9 +9,12 @@ enum CourseStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Draft => 'Draft',
-            self::Published => 'Published',
-        };
+        return ucfirst($this->value);
+    }
+
+    /** Warna badge di UI (lihat komponen x-badge). */
+    public function color(): string
+    {
+        return $this === self::Published ? 'green' : 'gray';
     }
 }

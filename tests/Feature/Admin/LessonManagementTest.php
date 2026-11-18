@@ -45,7 +45,7 @@ test('admin mengubah lesson', function () {
 test('menghapus lesson menghapus file video dan merapatkan urutan', function () {
     Storage::fake('local');
     [$a, $b, $c] = Lesson::factory()->for($this->course)->count(3)->create()->all();
-    $b->forceFill(['video_path' => $b->videoDirectory().'/v.mp4'])->save();
+    $b->forceFill(['video_path' => "videos/course-{$this->course->id}/lesson-{$b->id}/v.mp4"])->save();
     Storage::disk('local')->put($b->video_path, 'dummy');
 
     $this->actingAs($this->admin)->delete(route('admin.lessons.destroy', $b))

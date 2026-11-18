@@ -6,21 +6,12 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Membatasi route berdasarkan role user. Contoh: ->middleware('role:admin').
- * Dipasang setelah middleware 'auth', jadi user di sini selalu sudah login.
- */
+/** Contoh pemakaian: ->middleware('role:admin') */
 class EnsureUserHasRole
 {
-    public function handle(Request $request, Closure $next, string ...$roles): Response
+    public function handle(Request $request, Closure $next, string $role): Response
     {
-        $user = $request->user();
-
-        abort_unless(
-            $user && collect($roles)->contains(fn (string $role) => $user->hasRole($role)),
-            Response::HTTP_FORBIDDEN,
-            'Anda tidak memiliki akses ke halaman ini.'
-        );
+        abort_unless($request->user()?->role->value === $role, 403);
 
         return $next($request);
     }

@@ -6,17 +6,17 @@
             </x-slot>
         </x-page-header>
 
-        @php($filtered = filled($filters['q'] ?? null) || filled($filters['status'] ?? null))
+        @php($filtered = request()->filled('q') || request()->filled('status'))
 
         {{-- Filter --}}
         <form method="GET" class="flex flex-col gap-3 sm:flex-row sm:items-center">
             <label for="q" class="sr-only">Cari course</label>
-            <x-text-input id="q" name="q" type="search" placeholder="Cari judul course…" value="{{ $filters['q'] ?? '' }}" class="w-full sm:max-w-xs" />
+            <x-text-input id="q" name="q" type="search" placeholder="Cari judul course…" value="{{ request('q') }}" class="w-full sm:max-w-xs" />
             <label for="status" class="sr-only">Status</label>
             <x-select id="status" name="status" class="w-full sm:w-44" onchange="this.form.submit()">
                 <option value="">Semua status</option>
                 @foreach (\App\Enums\CourseStatus::cases() as $status)
-                    <option value="{{ $status->value }}" @selected(($filters['status'] ?? '') === $status->value)>{{ $status->label() }}</option>
+                    <option value="{{ $status->value }}" @selected(request('status') === $status->value)>{{ $status->label() }}</option>
                 @endforeach
             </x-select>
             <div class="flex gap-2">
@@ -57,7 +57,7 @@
                                     <a href="{{ route('admin.courses.show', $course) }}" class="font-semibold text-gray-900 hover:text-brand-700">{{ $course->title }}</a>
                                     <p class="mt-0.5 line-clamp-1 text-sm text-gray-500">{{ $course->description }}</p>
                                 </td>
-                                <td class="px-5 py-4"><x-course-status-badge :status="$course->status" /></td>
+                                <td class="px-5 py-4"><x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge></td>
                                 <td class="px-5 py-4 text-sm text-gray-700">{{ $course->lessons_count }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-sm text-gray-500" title="{{ $course->updated_at->format('d M Y H:i') }}">{{ $course->updated_at->diffForHumans() }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
@@ -74,7 +74,7 @@
                         <li class="space-y-2 p-4">
                             <div class="flex items-start justify-between gap-3">
                                 <a href="{{ route('admin.courses.show', $course) }}" class="font-semibold text-gray-900">{{ $course->title }}</a>
-                                <x-course-status-badge :status="$course->status" />
+                                <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
                             </div>
                             <p class="text-xs text-gray-500">{{ $course->lessons_count }} lesson · diperbarui {{ $course->updated_at->diffForHumans() }}</p>
                             <div class="-ms-2.5">@include('admin.courses.partials.row-actions', ['modalSuffix' => 'm'])</div>
