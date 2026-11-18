@@ -21,7 +21,7 @@
             <x-card class="space-y-5 p-6">
                 @if ($lesson->video_status === \App\Enums\VideoStatus::Ready)
                     <video src="{{ route('lessons.video', $lesson) }}" controls preload="metadata" class="aspect-video w-full rounded-lg bg-black"></video>
-                    <p class="text-sm text-gray-500">{{ $lesson->video_original_name }} · {{ Number::fileSize($lesson->video_size, 1) }}</p>
+                    <p class="text-sm text-gray-500">{{ $lesson->video_original_name }} ({{ Number::fileSize($lesson->video_size, 1) }})</p>
                 @elseif ($lesson->video_status === \App\Enums\VideoStatus::Failed)
                     <p class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">Upload sebelumnya gagal: {{ $lesson->video_error }}</p>
                 @endif

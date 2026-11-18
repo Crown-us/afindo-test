@@ -1,48 +1,58 @@
 <x-app-layout>
+    @php($featured = $courses->first())
+
     {{-- Hero --}}
-    <section class="relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 text-white">
-        <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
-            <div>
-                <p class="text-sm font-semibold uppercase tracking-wider text-brand-200">Belajar lewat video</p>
-                <h1 class="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Kuasai skill baru, satu lesson setiap kali.</h1>
-                <p class="mt-5 max-w-xl text-lg text-brand-100">
-                    Course singkat dan terstruktur dari dasar. Tonton materi video sesuai urutan, kapan saja, dari perangkat apa pun.
-                </p>
+    <section class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+        <div class="grid overflow-hidden rounded-3xl bg-gray-900 lg:grid-cols-2">
+            <div class="flex flex-col justify-center px-6 py-12 sm:px-12 lg:py-20">
+                <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Belajar skill digital dari video singkat dan terarah.</h1>
+                <p class="mt-5 max-w-lg text-lg text-gray-300">Course berbahasa Indonesia yang disusun per lesson. Tonton berurutan dari dasar, kapan saja dan dari perangkat apa pun.</p>
                 <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ route('courses.index') }}" class="inline-flex items-center rounded-lg bg-white px-5 py-3 text-sm font-semibold text-brand-800 shadow-sm hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-800">Jelajahi course</a>
+                    <x-link-button :href="route('courses.index')" class="px-5 py-3">Jelajahi course</x-link-button>
                     @guest
-                        <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white">Daftar gratis</a>
+                        <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg border border-white/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white">Daftar gratis</a>
                     @endguest
                 </div>
+                <dl class="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-white/10 pt-8">
+                    <div>
+                        <dt class="text-sm text-gray-400">Course</dt>
+                        <dd class="mt-1 text-2xl font-semibold text-white">{{ $courseCount }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-400">Video lesson</dt>
+                        <dd class="mt-1 text-2xl font-semibold text-white">{{ $lessonCount }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-400">Biaya</dt>
+                        <dd class="mt-1 text-2xl font-semibold text-white">Gratis</dd>
+                    </div>
+                </dl>
             </div>
 
-            {{-- Ilustrasi sederhana: mockup player --}}
-            <div class="hidden lg:block" aria-hidden="true">
-                <div class="rounded-2xl bg-white/10 p-3 shadow-2xl ring-1 ring-white/20">
-                    <div class="flex aspect-video items-center justify-center rounded-xl bg-brand-950/60">
-                        <x-application-logo class="h-20 w-20" />
-                    </div>
-                    <div class="mt-3 space-y-2 px-1 pb-1">
-                        @foreach (['w-3/4', 'w-1/2', 'w-2/3'] as $width)
-                            <div class="flex items-center gap-3">
-                                <span class="h-6 w-6 shrink-0 rounded-full bg-white/20"></span>
-                                <span class="h-2.5 {{ $width }} rounded-full bg-white/25"></span>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+            <div class="relative min-h-72 lg:min-h-full">
+                <img src="{{ asset('images/hero.jpg') }}" alt="Seorang pelajar tersenyum sambil belajar di depan laptop" class="absolute inset-0 h-full w-full object-cover">
+                @if ($featured)
+                    <a href="{{ route('courses.show', $featured) }}" class="absolute bottom-6 left-6 right-6 flex items-center gap-4 rounded-2xl bg-white/90 p-3 pe-5 shadow-lg backdrop-blur transition hover:bg-white sm:right-auto sm:max-w-sm">
+                        <x-course-thumbnail :course="$featured" class="h-14 w-20 shrink-0 rounded-lg" />
+                        <span class="min-w-0">
+                            <span class="block text-xs font-medium text-brand-600">Course terbaru</span>
+                            <span class="block truncate text-sm font-semibold text-gray-900">{{ $featured->title }}</span>
+                            <span class="block text-xs text-gray-500">{{ $featured->lessons_count }} video lesson</span>
+                        </span>
+                    </a>
+                @endif
             </div>
         </div>
     </section>
 
     {{-- Course terbaru --}}
-    <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wider text-brand-700">Course terbaru</p>
-                <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900">Mulai dari sini</h2>
+                <h2 class="text-3xl font-semibold tracking-tight text-gray-900">Course terbaru</h2>
+                <p class="mt-2 text-gray-500">Mulai dari course yang paling baru ditambahkan.</p>
             </div>
-            <a href="{{ route('courses.index') }}" class="text-sm font-semibold text-brand-700 hover:underline">Lihat semua course &rarr;</a>
+            <x-link-button variant="secondary" :href="route('courses.index')">Lihat semua course</x-link-button>
         </div>
 
         @if ($courses->isEmpty())
@@ -58,41 +68,38 @@
         @endif
     </section>
 
-    {{-- Cara belajar --}}
+    {{-- Manfaat --}}
     <section class="border-y border-gray-200 bg-white">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <p class="text-sm font-semibold uppercase tracking-wider text-brand-700">Cara belajar</p>
-            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900">Sederhana dan terarah</h2>
-            <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <h2 class="max-w-xl text-3xl font-semibold tracking-tight text-gray-900">Dirancang supaya belajar terasa ringan</h2>
+            <div class="mt-10 grid gap-6 md:grid-cols-3">
                 @foreach ([
-                    ['1', 'Pilih course', 'Lihat katalog dan baca ringkasan setiap course sebelum mulai.'],
-                    ['2', 'Tonton berurutan', 'Materi disusun per lesson, dari dasar sampai lanjutan.'],
-                    ['3', 'Belajar di mana saja', 'Tampilan menyesuaikan layar laptop maupun ponsel.'],
-                ] as [$step, $title, $text])
-                    <div class="rounded-xl border border-gray-200 p-6">
-                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 font-bold text-brand-700">{{ $step }}</span>
-                        <h3 class="mt-4 font-semibold text-gray-900">{{ $title }}</h3>
-                        <p class="mt-1 text-sm text-gray-600">{{ $text }}</p>
+                    ['Video per lesson', 'Materi dipecah menjadi video pendek, jadi mudah dicicil di sela kesibukan.', 'M15.75 10.5l4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z'],
+                    ['Urutan yang jelas', 'Setiap course punya daftar lesson berurutan, dari konsep dasar sampai praktik.', 'M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z'],
+                    ['Di laptop maupun ponsel', 'Tampilan menyesuaikan layar, jadi kamu bisa lanjut belajar di mana saja.', 'M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3'],
+                ] as [$title, $text, $icon])
+                    <div class="rounded-2xl bg-gray-50 p-6">
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-white">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}" /></svg>
+                        </span>
+                        <h3 class="mt-5 font-semibold text-gray-900">{{ $title }}</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-gray-500">{{ $text }}</p>
                     </div>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- CTA --}}
+    {{-- Ajakan daftar (hanya untuk guest) --}}
     @guest
-        <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div class="flex flex-col items-start justify-between gap-6 rounded-2xl bg-brand-50 p-8 ring-1 ring-brand-100 sm:flex-row sm:items-center">
+        <section class="mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-start justify-between gap-6 rounded-3xl bg-brand-600 px-8 py-12 sm:flex-row sm:items-center sm:px-12">
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-gray-900">Siap mulai belajar?</h2>
-                    <p class="mt-1 text-gray-600">Buat akun gratis untuk menonton seluruh materi video.</p>
+                    <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Siap mulai belajar?</h2>
+                    <p class="mt-2 text-brand-100">Buat akun gratis untuk menonton semua video lesson.</p>
                 </div>
-                <x-link-button :href="route('register')">Daftar sekarang</x-link-button>
+                <a href="{{ route('register') }}" class="inline-flex items-center rounded-lg bg-white px-5 py-3 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-600">Daftar gratis</a>
             </div>
         </section>
     @endguest
-
-    <footer class="border-t border-gray-200 py-8 text-center text-sm text-gray-500">
-        &copy; {{ date('Y') }} Afindo Learn
-    </footer>
 </x-app-layout>

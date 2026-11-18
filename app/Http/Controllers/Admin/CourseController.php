@@ -30,8 +30,11 @@ class CourseController extends Controller
 
     public function store(CourseRequest $request): RedirectResponse
     {
-        $course = new Course($request->validated());
+        $course = new Course($request->safe()->except('thumbnail'));
         $course->created_by = $request->user()->id;
+        if ($request->hasFile('thumbnail')) {
+            $course->replaceThumbnail($request->file('thumbnail'));
+        }
         $course->save();
 
         return redirect()->route('admin.courses.show', $course)
@@ -52,7 +55,11 @@ class CourseController extends Controller
 
     public function update(CourseRequest $request, Course $course): RedirectResponse
     {
-        $course->update($request->validated());
+        $course->fill($request->safe()->except('thumbnail'));
+        if ($request->hasFile('thumbnail')) {
+            $course->replaceThumbnail($request->file('thumbnail'));
+        }
+        $course->save();
 
         return redirect()->route('admin.courses.show', $course)->with('success', 'Perubahan course disimpan.');
     }

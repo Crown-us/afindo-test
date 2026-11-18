@@ -1,3 +1,4 @@
+import colors from 'tailwindcss/colors';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
@@ -13,24 +14,14 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                // Plus Jakarta Sans: humanis, sangat terbaca di ukuran kecil (tabel/form).
-                sans: ['"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
+                // Geist: sans-serif modern yang bersih, nyaman di ukuran kecil maupun judul besar.
+                sans: ['Geist', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // Warna utama "Afindo Learn": teal tua -> tenang, terkesan edukatif & tepercaya.
-                brand: {
-                    50: '#eefbf7',
-                    100: '#d5f5ea',
-                    200: '#aeead8',
-                    300: '#79d8c0',
-                    400: '#43bea3',
-                    500: '#22a38a',
-                    600: '#168471',
-                    700: '#146a5d',
-                    800: '#14554c',
-                    900: '#134640',
-                    950: '#062825',
-                },
+                // Aksen utama: biru (tombol, link, status aktif).
+                brand: colors.blue,
+                // Abu netral ala shadcn: semua kelas gray-* memakai palet zinc.
+                gray: colors.zinc,
             },
         },
     },

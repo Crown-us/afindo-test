@@ -1,126 +1,84 @@
 @php
     // Menu utama: [nama route, label, pola route aktif]. Admin mendapat menu kelola tambahan.
-    $navItems = [['home', 'Beranda', 'home'], ['courses.index', 'Katalog Course', 'courses.*']];
+    $navItems = [['home', 'Beranda', 'home'], ['courses.index', 'Katalog', 'courses.*']];
     if (Auth::user()?->isAdmin()) {
-        $navItems[] = ['admin.dashboard', 'Dashboard Admin', 'admin.dashboard'];
+        $navItems[] = ['admin.dashboard', 'Dashboard', 'admin.dashboard'];
         $navItems[] = ['admin.courses.index', 'Kelola Course', 'admin.courses.*'];
     }
 @endphp
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
-                        <x-brand />
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @foreach ($navItems as [$route, $label, $pattern])
-                        <x-nav-link :href="route($route)" :active="request()->routeIs($pattern)">{{ $label }}</x-nav-link>
-                    @endforeach
-                </div>
+<nav x-data="{ open: false }" class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-8">
+            <a href="{{ route('home') }}" class="rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+                <x-brand />
+            </a>
+            <div class="hidden items-center gap-1 md:flex">
+                @foreach ($navItems as [$route, $label, $pattern])
+                    <x-nav-link :href="route($route)" :active="request()->routeIs($pattern)">{{ $label }}</x-nav-link>
+                @endforeach
             </div>
+        </div>
 
-            <!-- Settings Dropdown -->
+        {{-- Desktop: tombol masuk/daftar atau menu akun --}}
+        <div class="hidden md:flex md:items-center md:gap-2">
             @guest
-                <div class="hidden sm:flex sm:items-center sm:gap-2 sm:ms-6">
-                    <x-link-button variant="secondary" :href="route('login')">Masuk</x-link-button>
-                    <x-link-button :href="route('register')">Daftar</x-link-button>
-                </div>
+                <x-link-button variant="secondary" :href="route('login')">Masuk</x-link-button>
+                <x-link-button :href="route('register')">Daftar gratis</x-link-button>
             @else
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div class="text-right">
-                                <div class="text-gray-800">{{ Auth::user()->name }}</div>
-                                <div class="text-xs font-normal text-gray-500">{{ Auth::user()->role->label() }}</div>
-                            </div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                        <button class="flex items-center gap-3 rounded-lg px-2 py-1.5 text-left hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">{{ Str::upper(Str::substr(Auth::user()->name, 0, 1)) }}</span>
+                            <span class="leading-tight">
+                                <span class="block text-sm font-medium text-gray-900">{{ Auth::user()->name }}</span>
+                                <span class="block text-xs text-gray-500">{{ Auth::user()->role->label() }}</span>
+                            </span>
+                            <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            Profil
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
+                        <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                Keluar
-                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Keluar</x-dropdown-link>
                         </form>
                     </x-slot>
                 </x-dropdown>
-            </div>
             @endguest
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
         </div>
+
+        {{-- Tombol menu mobile --}}
+        <button @click="open = ! open" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:hidden" :aria-expanded="open" aria-label="Buka menu">
+            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                <path :class="{ 'hidden': open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path :class="{ 'hidden': ! open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            @foreach ($navItems as [$route, $label, $pattern])
-                <x-responsive-nav-link :href="route($route)" :active="request()->routeIs($pattern)">{{ $label }}</x-responsive-nav-link>
-            @endforeach
-        </div>
+    {{-- Menu mobile --}}
+    <div x-show="open" x-cloak class="space-y-1 border-t border-gray-200 bg-white px-4 py-3 md:hidden">
+        @foreach ($navItems as [$route, $label, $pattern])
+            <x-responsive-nav-link :href="route($route)" :active="request()->routeIs($pattern)">{{ $label }}</x-responsive-nav-link>
+        @endforeach
 
-        <!-- Responsive Settings Options -->
-        @guest
-            <div class="flex gap-2 border-t border-gray-200 px-4 py-4">
-                <x-link-button variant="secondary" :href="route('login')" class="flex-1">Masuk</x-link-button>
-                <x-link-button :href="route('register')" class="flex-1">Daftar</x-link-button>
-            </div>
-        @else
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    Profil
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
+        <div class="mt-3 border-t border-gray-200 pt-3">
+            @guest
+                <div class="flex gap-2">
+                    <x-link-button variant="secondary" :href="route('login')" class="flex-1">Masuk</x-link-button>
+                    <x-link-button :href="route('register')" class="flex-1">Daftar gratis</x-link-button>
+                </div>
+            @else
+                <p class="px-3 text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
+                <p class="mb-2 px-3 text-sm text-gray-500">{{ Auth::user()->email }}</p>
+                <x-responsive-nav-link :href="route('profile.edit')">Profil</x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        Keluar
-                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Keluar</x-responsive-nav-link>
                 </form>
-            </div>
+            @endguest
         </div>
-        @endguest
     </div>
 </nav>

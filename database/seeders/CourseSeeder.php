@@ -11,7 +11,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Course & lesson dummy. Lesson di course yang sudah publish diberi video contoh
+ * Course & lesson dummy. Thumbnail course dari database/seeders/images (foto Unsplash, lihat CREDITS.md).
+ * Lesson di course yang sudah publish diberi video contoh
  * (database/seeders/videos/sample.mp4, dibuat dengan FFmpeg testsrc); lesson di course
  * draft dibiarkan "pending" untuk demo alur upload.
  */
@@ -28,6 +29,8 @@ class CourseSeeder extends Seeder
                 'status' => $data['status'],
             ]);
             $course->created_by = $adminId;
+            $course->thumbnail_path = Storage::disk(Course::THUMBNAIL_DISK)
+                ->putFile('thumbnails', database_path("seeders/images/{$data['thumbnail']}"));
             $course->save();
 
             foreach ($data['lessons'] as [$title, $description]) {
@@ -61,6 +64,7 @@ class CourseSeeder extends Seeder
         return [
             [
                 'title' => 'Dasar Pemrograman Web dengan Laravel',
+                'thumbnail' => 'laravel.jpg',
                 'status' => CourseStatus::Published,
                 'description' => 'Pelajari konsep inti Laravel mulai dari routing, controller, Blade, hingga Eloquent ORM. Cocok untuk developer PHP yang ingin membangun aplikasi web yang rapi dan mudah dikembangkan.',
                 'lessons' => [
@@ -72,6 +76,7 @@ class CourseSeeder extends Seeder
             ],
             [
                 'title' => 'Git dan GitHub untuk Pemula',
+                'thumbnail' => 'git.jpg',
                 'status' => CourseStatus::Published,
                 'description' => 'Kuasai version control dari nol: commit, branch, merge, hingga kolaborasi lewat pull request di GitHub.',
                 'lessons' => [
@@ -82,6 +87,7 @@ class CourseSeeder extends Seeder
             ],
             [
                 'title' => 'Desain UI/UX untuk Developer',
+                'thumbnail' => 'uiux.jpg',
                 'status' => CourseStatus::Published,
                 'description' => 'Prinsip desain antarmuka yang praktis untuk developer: hierarki visual, tipografi, warna, dan aksesibilitas.',
                 'lessons' => [
@@ -92,6 +98,7 @@ class CourseSeeder extends Seeder
             ],
             [
                 'title' => 'Membangun REST API dengan Laravel',
+                'thumbnail' => 'rest-api.jpg',
                 'status' => CourseStatus::Draft,
                 'description' => 'Merancang dan membangun REST API: resource controller, validasi, API resource, dan autentikasi token. (Masih dalam penyusunan.)',
                 'lessons' => [

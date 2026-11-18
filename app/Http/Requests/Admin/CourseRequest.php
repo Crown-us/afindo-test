@@ -14,11 +14,12 @@ class CourseRequest extends FormRequest
             'title' => ['required', 'string', 'min:3', 'max:150'],
             'description' => ['required', 'string', 'min:10', 'max:5000'],
             'status' => ['required', Rule::enum(CourseStatus::class)],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 
     public function attributes(): array
     {
-        return ['title' => 'judul', 'description' => 'deskripsi', 'status' => 'status'];
+        return ['title' => 'judul', 'description' => 'deskripsi', 'status' => 'status', 'thumbnail' => 'thumbnail'];
     }
 }

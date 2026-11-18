@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
             $table->text('description');
+            $table->string('thumbnail_path')->nullable(); // disk public
             $table->string('status', 20)->default('draft')->index();
             $table->timestamps();
         });

@@ -1,5 +1,5 @@
 {{-- Form course, dipakai halaman tambah & edit. Variabel: $course, $action, $method, $submitLabel --}}
-<form method="POST" action="{{ $action }}" class="space-y-6">
+<form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-6">
     @csrf
     @method($method)
 
@@ -14,6 +14,24 @@
             <x-input-label for="description" value="Deskripsi" />
             <x-textarea id="description" name="description" rows="5" class="mt-1 block w-full" required maxlength="5000" placeholder="Jelaskan apa yang akan dipelajari student di course ini.">{{ old('description', $course->description) }}</x-textarea>
             <x-input-error :messages="$errors->get('description')" class="mt-2" />
+        </div>
+
+        {{-- Thumbnail: pratinjau langsung muncul saat file dipilih --}}
+        <div x-data="{ preview: @js($course->thumbnailUrl()) }">
+            <x-input-label for="thumbnail" value="Thumbnail (opsional)" />
+            <div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div class="aspect-video w-full shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:w-48">
+                    <img x-show="preview" :src="preview" alt="" class="h-full w-full object-cover">
+                    <div x-show="!preview" class="flex h-full items-center justify-center text-sm text-gray-400">Belum ada gambar</div>
+                </div>
+                <div>
+                    <input id="thumbnail" name="thumbnail" type="file" accept="image/jpeg,image/png,image/webp"
+                           @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : preview"
+                           class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200">
+                    <p class="mt-1 text-xs text-gray-500">JPG, PNG, atau WebP. Maksimal 2 MB. Rasio 16:9 paling pas.</p>
+                </div>
+            </div>
+            <x-input-error :messages="$errors->get('thumbnail')" class="mt-2" />
         </div>
 
         <fieldset>

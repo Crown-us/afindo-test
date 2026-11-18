@@ -4,6 +4,7 @@ use App\Enums\CourseStatus;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
@@ -42,6 +43,32 @@ test('admin bisa membuat course', function () {
         ->and($course->created_by)->toBe($this->admin->id);
 
     $response->assertRedirect(route('admin.courses.show', $course))->assertSessionHas('success');
+});
+
+test('thumbnail course diunggah, diganti, dan file lama dihapus', function () {
+    Storage::fake('public');
+    $data = ['title' => 'Course Bergambar', 'description' => 'Deskripsi course bergambar.', 'status' => 'draft'];
+
+    $this->actingAs($this->admin)->post(route('admin.courses.store'), $data + [
+        'thumbnail' => UploadedFile::fake()->image('cover.jpg', 1280, 720),
+    ]);
+    $course = Course::firstWhere('title', 'Course Bergambar');
+    $oldPath = $course->thumbnail_path;
+    Storage::disk('public')->assertExists($oldPath);
+
+    $this->actingAs($this->admin)->put(route('admin.courses.update', $course), $data + [
+        'thumbnail' => UploadedFile::fake()->image('baru.png', 1280, 720),
+    ]);
+
+    Storage::disk('public')->assertMissing($oldPath);
+    Storage::disk('public')->assertExists($course->fresh()->thumbnail_path);
+});
+
+test('thumbnail selain gambar ditolak', function () {
+    $this->actingAs($this->admin)->post(route('admin.courses.store'), [
+        'title' => 'Course', 'description' => 'Deskripsi course.', 'status' => 'draft',
+        'thumbnail' => UploadedFile::fake()->create('cover.pdf', 10, 'application/pdf'),
+    ])->assertSessionHasErrors('thumbnail');
 });
 
 test('validasi course menolak input kosong dan status tidak dikenal', function () {

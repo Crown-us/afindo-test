@@ -15,6 +15,8 @@ return [
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
     'file' => ':Attribute harus berupa file.',
     'mimetypes' => ':Attribute harus berupa file bertipe: :values.',
+    'image' => ':Attribute harus berupa gambar.',
+    'mimes' => ':Attribute harus berupa file bertipe: :values.',
     'min' => [
         'string' => ':Attribute minimal :min karakter.',
     ],

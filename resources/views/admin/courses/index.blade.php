@@ -42,7 +42,7 @@
                 {{-- Tabel (desktop) --}}
                 <table class="hidden min-w-full divide-y divide-gray-200 md:table">
                     <thead class="bg-gray-50">
-                        <tr class="text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        <tr class="text-left text-sm font-medium text-gray-500">
                             <th scope="col" class="px-5 py-3">Course</th>
                             <th scope="col" class="px-5 py-3">Status</th>
                             <th scope="col" class="px-5 py-3">Lesson</th>
@@ -54,8 +54,13 @@
                         @foreach ($courses as $course)
                             <tr class="hover:bg-gray-50">
                                 <td class="max-w-md px-5 py-4">
-                                    <a href="{{ route('admin.courses.show', $course) }}" class="font-semibold text-gray-900 hover:text-brand-700">{{ $course->title }}</a>
-                                    <p class="mt-0.5 line-clamp-1 text-sm text-gray-500">{{ $course->description }}</p>
+                                    <div class="flex items-center gap-4">
+                                        <x-course-thumbnail :course="$course" class="aspect-video w-24 shrink-0 rounded-md text-base" />
+                                        <div class="min-w-0">
+                                            <a href="{{ route('admin.courses.show', $course) }}" class="font-medium text-gray-900 hover:text-brand-700">{{ $course->title }}</a>
+                                            <p class="mt-0.5 line-clamp-1 text-sm text-gray-500">{{ $course->description }}</p>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4"><x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge></td>
                                 <td class="px-5 py-4 text-sm text-gray-700">{{ $course->lessons_count }}</td>
@@ -71,12 +76,15 @@
                 {{-- Kartu (mobile) --}}
                 <ul class="divide-y divide-gray-100 md:hidden">
                     @foreach ($courses as $course)
-                        <li class="space-y-2 p-4">
-                            <div class="flex items-start justify-between gap-3">
-                                <a href="{{ route('admin.courses.show', $course) }}" class="font-semibold text-gray-900">{{ $course->title }}</a>
+                        <li class="space-y-3 p-4">
+                            <div class="flex items-start gap-3">
+                                <x-course-thumbnail :course="$course" class="aspect-video w-20 shrink-0 rounded-md text-base" />
+                                <div class="min-w-0 flex-1">
+                                    <a href="{{ route('admin.courses.show', $course) }}" class="font-medium text-gray-900">{{ $course->title }}</a>
+                                    <p class="mt-1 text-xs text-gray-500">{{ $course->lessons_count }} lesson, diperbarui {{ $course->updated_at->diffForHumans() }}</p>
+                                </div>
                                 <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
                             </div>
-                            <p class="text-xs text-gray-500">{{ $course->lessons_count }} lesson · diperbarui {{ $course->updated_at->diffForHumans() }}</p>
                             <div class="-ms-2.5">@include('admin.courses.partials.row-actions', ['modalSuffix' => 'm'])</div>
                         </li>
                     @endforeach

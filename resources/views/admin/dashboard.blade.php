@@ -27,7 +27,7 @@
                             <a href="{{ route('admin.courses.show', $course) }}" class="flex items-center justify-between gap-4 px-5 py-3 hover:bg-gray-50">
                                 <div class="min-w-0">
                                     <p class="truncate font-medium text-gray-900">{{ $course->title }}</p>
-                                    <p class="text-xs text-gray-500">{{ $course->lessons_count }} lesson · diperbarui {{ $course->updated_at->diffForHumans() }}</p>
+                                    <p class="text-xs text-gray-500">{{ $course->lessons_count }} lesson, diperbarui {{ $course->updated_at->diffForHumans() }}</p>
                                 </div>
                                 <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
                             </a>

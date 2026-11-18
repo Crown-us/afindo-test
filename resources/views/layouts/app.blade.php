@@ -9,13 +9,13 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=geist:400,500,600,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-50">
+    <body class="bg-gray-50 font-sans text-gray-900 antialiased">
+        <div class="flex min-h-screen flex-col bg-gray-50">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -28,9 +28,16 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="pb-16">
+            <main class="flex-1 pb-16">
                 {{ $slot }}
             </main>
+
+            <footer class="border-t border-gray-200 bg-white">
+                <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-sm text-gray-500 sm:px-6 lg:px-8">
+                    <x-brand />
+                    <p>&copy; {{ date('Y') }} Afindo Learn. Materi video untuk keperluan demo.</p>
+                </div>
+            </footer>
         </div>
 
         <x-flash />

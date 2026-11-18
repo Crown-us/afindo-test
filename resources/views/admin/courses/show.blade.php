@@ -17,15 +17,18 @@
             </x-slot>
         </x-page-header>
 
-        <x-card class="p-6">
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500">
-                <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
-                <span>{{ $course->lessons->count() }} lesson</span>
-                @unless ($course->isPublished())
-                    <span>Belum terlihat oleh student</span>
-                @endunless
+        <x-card class="flex flex-col gap-6 p-6 sm:flex-row">
+            <x-course-thumbnail :course="$course" class="aspect-video w-full shrink-0 rounded-lg sm:w-56" />
+            <div>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500">
+                    <x-badge :color="$course->status->color()">{{ $course->status->label() }}</x-badge>
+                    <span>{{ $course->lessons->count() }} lesson</span>
+                    @unless ($course->isPublished())
+                        <span>Belum terlihat oleh student</span>
+                    @endunless
+                </div>
+                <p class="mt-3 whitespace-pre-line text-gray-700">{{ $course->description }}</p>
             </div>
-            <p class="mt-4 whitespace-pre-line text-gray-700">{{ $course->description }}</p>
         </x-card>
 
         <section x-data="lessonSorter(@js(route('admin.courses.lessons.reorder', $course)))" aria-labelledby="lessons-heading">
