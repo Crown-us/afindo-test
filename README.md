@@ -39,14 +39,15 @@ Detail rancangan (system design, ERD, flowchart/sequence, UI/UX, asumsi, keterba
 - PHP **8.3+** dengan ekstensi `pdo_mysql`, `fileinfo`, `mbstring`, `openssl`, `gd`
 - Composer 2
 - Node.js **20.19+ atau 22.12+** dan npm
-- MySQL 8 (atau MariaDB 10.6+)
+- MySQL 8 (atau MariaDB 10.6+). Untuk mencoba cepat tanpa MySQL, SQLite juga bisa (lihat Opsi B).
 
 ## Instalasi
 
-```bash
-git clone <url-repo> afindo-learn
-cd afindo-learn
+### 1. Ambil source code dan dependency
 
+Clone repository ini atau ekstrak arsip ZIP-nya, lalu dari folder proyek jalankan:
+
+```bash
 composer install
 npm install
 
@@ -54,7 +55,9 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Buat database kosong, lalu sesuaikan `.env` bila perlu:
+### 2. Siapkan database (pilih salah satu)
+
+**Opsi A: MySQL** (sesuai brief). Buat database kosong `afindo_elearning`, lalu sesuaikan `.env` bila perlu:
 
 ```env
 DB_CONNECTION=mysql
@@ -65,7 +68,17 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Jalankan migrasi + data demo, tautkan storage publik (untuk thumbnail), dan build aset:
+**Opsi B: SQLite** (untuk mencoba cepat tanpa memasang MySQL). Di `.env`, ubah `DB_CONNECTION` menjadi `sqlite` dan **hapus** lima baris `DB_HOST` sampai `DB_PASSWORD`, lalu buat file database kosong:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+```bash
+php -r "touch('database/database.sqlite');"
+```
+
+### 3. Migrasi, data demo, storage, dan aset
 
 ```bash
 php artisan migrate --seed
@@ -73,30 +86,30 @@ php artisan storage:link
 npm run build
 ```
 
-### Batas upload video
-
-Upload video dibatasi oleh PHP. Untuk demo dengan video asli, naikkan nilai berikut di `php.ini` lalu restart server:
-
-```ini
-upload_max_filesize = 512M
-post_max_size = 520M
-```
-
-Batas aplikasi sendiri adalah 500 MB. Halaman upload otomatis menampilkan batas yang berlaku (nilai terkecil antara batas aplikasi dan PHP).
+`storage:link` diperlukan agar thumbnail course tampil. Langkah 1 sampai 3 juga bisa dijalankan sekaligus dengan `composer run setup` (setelah database di `.env` siap).
 
 ## Menjalankan
 
 ```bash
-composer run dev
-```
-
-Perintah ini menjalankan server Laravel dan Vite sekaligus. Buka http://localhost:8000.
-
-Alternatif tanpa Vite dev server (setelah `npm run build`):
-
-```bash
 php artisan serve
 ```
+
+Buka http://localhost:8000. Saat mengembangkan, `composer run dev` menjalankan server Laravel dan Vite (hot reload) sekaligus.
+
+### Demo upload video berukuran besar
+
+Upload dibatasi oleh pengaturan PHP. Bawaan PHP hanya `upload_max_filesize = 2M`, sehingga halaman upload akan menampilkan "Maksimal 2 MB". Ada dua cara menaikkannya:
+
+1. **Tanpa mengubah konfigurasi**: jalankan server bawaan PHP dari folder `public` dengan batas yang lebih besar. (Opsi `-d` tidak ikut terbawa jika dipakai bersama `php artisan serve`, jadi gunakan perintah ini.)
+
+   ```bash
+   cd public
+   php -d upload_max_filesize=512M -d post_max_size=520M -S 127.0.0.1:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php
+   ```
+
+2. **Permanen**: ubah `php.ini` (`upload_max_filesize = 512M`, `post_max_size = 520M`) lalu restart server.
+
+Batas aplikasi sendiri 500 MB; halaman upload selalu menampilkan batas yang sedang berlaku (nilai terkecil antara batas aplikasi dan PHP).
 
 ## Akun demo
 

@@ -339,6 +339,14 @@ Komponen Blade yang dipakai ulang: `x-card`, `x-badge`, `x-course-card`, `x-cour
 |---|
 | ![Upload video](screenshots/admin-upload-video.jpg) |
 
+Screenshot upload diambil dengan batas upload PHP dinaikkan (lihat README, bagian "Demo upload video berukuran besar"); dengan konfigurasi PHP bawaan halaman ini menampilkan "Maksimal 2 MB".
+
+### Tampilan di ponsel (lebar 375px)
+
+| Beranda | Player lesson | Kelola course (admin) |
+|---|---|---|
+| ![Beranda mobile](screenshots/mobile-beranda.jpg) | ![Player mobile](screenshots/mobile-player-lesson.jpg) | ![Kelola course mobile](screenshots/mobile-admin-kelola-course.jpg) |
+
 ## 9. Asumsi
 
 - Satu lesson hanya punya satu video.

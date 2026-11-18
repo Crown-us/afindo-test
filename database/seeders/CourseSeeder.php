@@ -20,6 +20,10 @@ class CourseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Seeder dipakai bersama migrate:fresh; kosongkan file lama agar tidak ada video/thumbnail yatim.
+        Storage::disk(Lesson::VIDEO_DISK)->deleteDirectory('videos');
+        Storage::disk(Course::THUMBNAIL_DISK)->deleteDirectory('thumbnails');
+
         $adminId = User::where('email', 'admin@afindo.test')->value('id');
 
         foreach ($this->courses() as $data) {

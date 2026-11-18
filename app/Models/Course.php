@@ -49,9 +49,13 @@ class Course extends Model
         }
     }
 
+    /**
+     * URL lewat asset() mengikuti host yang sedang dibuka, jadi thumbnail tetap tampil
+     * walau aplikasi dijalankan di port/domain yang berbeda dari APP_URL.
+     */
     public function thumbnailUrl(): ?string
     {
-        return $this->thumbnail_path ? Storage::disk(self::THUMBNAIL_DISK)->url($this->thumbnail_path) : null;
+        return $this->thumbnail_path ? asset('storage/'.$this->thumbnail_path) : null;
     }
 
     /** @return HasMany<Lesson, $this> */
