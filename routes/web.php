@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\LessonVideoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +40,12 @@ Route::get('/lessons/{lesson}/video', [LessonVideoController::class, 'show'])
 
 // ---------- Area Student ----------
 Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::view('/courses', 'student.courses.index')->name('courses.index');
+    Route::get('/courses', [Student\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/{course}', [Student\CourseController::class, 'show'])->name('courses.show');
+    // scopeBindings: lesson harus milik course di URL, selain itu 404.
+    Route::get('/courses/{course}/lessons/{lesson}', [Student\LessonController::class, 'show'])
+        ->scopeBindings()
+        ->name('courses.lessons.show');
 });
 
 Route::middleware('auth')->group(function () {
