@@ -3,40 +3,56 @@
 namespace Database\Seeders;
 
 use App\Enums\CourseStatus;
+use App\Enums\VideoStatus;
 use App\Models\Course;
+use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * Data course & lesson dummy yang relevan. Video belum dilampirkan di sini;
- * lesson berstatus "pending" sampai admin mengunggah video.
+ * Course & lesson dummy. Lesson di course yang sudah publish diberi video contoh
+ * (database/seeders/videos/sample.mp4, dibuat dengan FFmpeg testsrc); lesson di course
+ * draft dibiarkan "pending" untuk demo alur upload.
  */
 class CourseSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::where('email', 'admin@afindo.test')->first();
+        $adminId = User::where('email', 'admin@afindo.test')->value('id');
 
         foreach ($this->courses() as $data) {
-            $course = Course::firstOrNew(['title' => $data['title']]);
-            $course->fill([
+            $course = new Course([
+                'title' => $data['title'],
                 'description' => $data['description'],
                 'status' => $data['status'],
             ]);
-            $course->created_by = $admin?->id;
+            $course->created_by = $adminId;
             $course->save();
 
-            if ($course->lessons()->exists()) {
-                continue;
-            }
-
             foreach ($data['lessons'] as [$title, $description]) {
-                $course->lessons()->create([
-                    'title' => $title,
-                    'description' => $description,
-                ]);
+                $lesson = $course->lessons()->create(['title' => $title, 'description' => $description]);
+
+                if ($course->isPublished()) {
+                    $this->attachSampleVideo($lesson);
+                }
             }
         }
+    }
+
+    private function attachSampleVideo(Lesson $lesson): void
+    {
+        $source = database_path('seeders/videos/sample.mp4');
+        $path = "videos/course-{$lesson->course_id}/lesson-{$lesson->id}/sample.mp4";
+        Storage::disk(Lesson::VIDEO_DISK)->put($path, file_get_contents($source));
+
+        $lesson->forceFill([
+            'video_path' => $path,
+            'video_original_name' => 'sample.mp4',
+            'video_mime' => 'video/mp4',
+            'video_size' => filesize($source),
+            'video_status' => VideoStatus::Ready,
+        ])->save();
     }
 
     /** @return array<int, array<string, mixed>> */

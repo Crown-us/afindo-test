@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\LessonVideoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,14 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('courses.lessons', Admin\LessonController::class)
             ->only(['create', 'store', 'edit', 'update', 'destroy'])
             ->shallow();
+
+        Route::post('lessons/{lesson}/video', [LessonVideoController::class, 'store'])->name('lessons.video.store');
     });
+
+// Streaming video: admin & student, otorisasi di LessonPolicy.
+Route::get('/lessons/{lesson}/video', [LessonVideoController::class, 'show'])
+    ->middleware('auth')
+    ->name('lessons.video');
 
 // ---------- Area Student ----------
 Route::middleware(['auth', 'role:student'])->group(function () {
