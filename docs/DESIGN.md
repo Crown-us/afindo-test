@@ -260,7 +260,7 @@ sequenceDiagram
     end
     L->>L: course published? lesson milik course? (selain itu 404)
     L-->>U: halaman player + daftar materi
-    U->>V: <video src="/lessons/{id}/video"> (Range request)
+    U->>V: player memuat /lessons/{id}/video (Range request)
     V->>P: view(user, lesson)
     alt tidak diizinkan
         V-->>U: 403
