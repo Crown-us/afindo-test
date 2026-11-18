@@ -21,16 +21,4 @@ class LessonFactory extends Factory
             'video_status' => VideoStatus::Pending,
         ];
     }
-
-    /** Lesson dengan video siap putar (file harus dibuat sendiri di test, mis. Storage::fake). */
-    public function withVideo(string $path = 'videos/sample.mp4'): static
-    {
-        return $this->state(fn () => [
-            'video_path' => $path,
-            'video_original_name' => basename($path),
-            'video_mime' => 'video/mp4',
-            'video_size' => 1024,
-            'video_status' => VideoStatus::Ready,
-        ]);
-    }
 }

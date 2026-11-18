@@ -17,7 +17,6 @@ return [
     'mimetypes' => ':Attribute harus berupa file bertipe: :values.',
     'min' => [
         'string' => ':Attribute minimal :min karakter.',
-        'file' => ':Attribute minimal :min KB.',
     ],
     'max' => [
         'string' => ':Attribute maksimal :max karakter.',

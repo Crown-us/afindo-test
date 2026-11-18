@@ -24,9 +24,4 @@ class CourseFactory extends Factory
     {
         return $this->state(fn () => ['status' => CourseStatus::Published]);
     }
-
-    public function draft(): static
-    {
-        return $this->state(fn () => ['status' => CourseStatus::Draft]);
-    }
 }

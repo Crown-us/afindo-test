@@ -12,7 +12,7 @@ beforeEach(function () {
 
 test('admin melihat daftar course dengan pencarian dan filter status', function () {
     Course::factory()->published()->create(['title' => 'Belajar Laravel']);
-    Course::factory()->draft()->create(['title' => 'Belajar Vue']);
+    Course::factory()->create(['title' => 'Belajar Vue']);
     Course::factory()->published()->create(['title' => 'Git Dasar']);
 
     $this->actingAs($this->admin)->get(route('admin.courses.index'))
@@ -53,7 +53,7 @@ test('validasi course menolak input kosong dan status tidak dikenal', function (
 });
 
 test('admin bisa mengubah course dan halaman edit/detail tampil', function () {
-    $course = Course::factory()->draft()->create();
+    $course = Course::factory()->create();
     Lesson::factory()->for($course)->create(['title' => 'Lesson Pertama']);
 
     $this->actingAs($this->admin)->get(route('admin.courses.show', $course))->assertOk()->assertSee('Lesson Pertama');

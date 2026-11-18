@@ -5,15 +5,15 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::redirect('/', '/dashboard');
 
 // Breeze mengarahkan ke sini setelah login/register; teruskan sesuai role.
 Route::get('/dashboard', fn (Request $request) => redirect()->route($request->user()->isAdmin() ? 'admin.dashboard' : 'courses.index'))
-    ->middleware(['auth', 'verified'])
+    ->middleware('auth')
     ->name('dashboard');
 
 // ---------- Area Admin ----------
-Route::middleware(['auth', 'verified', 'role:admin'])
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     });
 
 // ---------- Area Student ----------
-Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
+Route::middleware(['auth', 'role:student'])->group(function () {
     Route::view('/courses', 'student.courses.index')->name('courses.index');
 });
 

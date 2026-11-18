@@ -4,6 +4,8 @@ use App\Enums\UserRole;
 use App\Models\User;
 
 test('guest diarahkan ke login saat membuka area admin maupun student', function () {
+    $this->get('/')->assertRedirect('/dashboard');
+    $this->get('/dashboard')->assertRedirect('/login');
     $this->get('/admin')->assertRedirect('/login');
     $this->get('/courses')->assertRedirect('/login');
 });
