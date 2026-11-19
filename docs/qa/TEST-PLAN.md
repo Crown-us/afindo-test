@@ -1,4 +1,4 @@
-# QA Test Plan & Report — Afindo Learn
+# QA Test Plan & Report: Afindo Learn
 
 Dokumen ini mencatat rencana pengujian, skenario yang dijalankan, dan hasil eksekusi untuk aplikasi **Afindo Learn** (Technical Assessment Web Developer, Track A).
 
@@ -16,7 +16,7 @@ Dokumen ini mencatat rencana pengujian, skenario yang dijalankan, dan hasil ekse
 | Database | MySQL 8.4.9 (InnoDB) |
 | Node.js | 26.13.0 |
 | Browser | Chromium 159.0.8154.6 (Playwright, headless) |
-| Viewport UI | Desktop 1366×900; mobile 375×812 (deviceScaleFactor 2) |
+| Viewport UI | Desktop 1366x900; mobile 375x812 (deviceScaleFactor 2) |
 | Server | `php -S` dari folder `public`, `upload_max_filesize=512M`, `post_max_size=520M` |
 
 Data uji: 4 course (3 published, 1 draft), 12 lesson (10 punya video), 3 akun demo (`admin@afindo.test`, `student@afindo.test`, `siti@afindo.test`, password `password`).
@@ -27,7 +27,7 @@ Pengujian dilakukan tiga lapis supaya perilaku server, UI, dan browser semuanya 
 
 | Lapis | Alat | Fokus | Jumlah |
 |---|---|---|---|
-| Regression test | Pest 4 (`php artisan test`) | Aturan bisnis, policy, validasi, CRUD, upload, streaming — di MySQL | 89 test (315 assertion) |
+| Regression test | Pest 4 (`php artisan test`) | Aturan bisnis, policy, validasi, CRUD, upload, streaming, di MySQL | 89 test (315 assertion) |
 | QA HTTP end-to-end | Playwright `request` (`tests/e2e/qa-http.mjs`) | Status code, redirect, cookie/session, CSRF, otorisasi, isi response, file di disk | 35 skenario |
 | QA browser end-to-end | Playwright + Chromium (`tests/e2e/qa-ui.mjs`) | Form sungguhan, upload + progress bar, drag & drop, modal, playback, responsive | 15 skenario |
 
@@ -55,14 +55,14 @@ Pengujian memakai database terpisah `afindo_qa` karena skrip membuat dan menghap
 | A5 | Halaman login & register | 200, form tampil | Lulus |
 | A6 | Guest membuka lesson | Redirect `/login` | Lulus (302) |
 | A7 | Guest mengakses stream video | Redirect `/login` | Lulus (302) |
-| B1 | Login admin | 302 → dashboard, `/admin` 200 | Lulus |
-| B2 | Login student | 302, `/admin` 403, dashboard → katalog | Lulus |
+| B1 | Login admin | 302 -> dashboard, `/admin` 200 | Lulus |
+| B2 | Login student | 302, `/admin` 403, dashboard -> katalog | Lulus |
 | B3 | Login password salah | Ditolak + pesan error | Lulus |
 | B4 | POST tanpa token CSRF | 419 | Lulus |
 | B5 | Register dengan `role=admin` | Tetap student, `/admin` 403 | Lulus |
-| G1 | Guest buka lesson → login | Kembali ke lesson yang dituju | Lulus (`/courses/1/lessons/1`) |
+| G1 | Guest buka lesson -> login | Kembali ke lesson yang dituju | Lulus (`/courses/1/lessons/1`) |
 | U1 | Login admin lewat form browser | Masuk `/admin` | Lulus |
-| U9 | Guest pilih lesson → login student | Redirect kembali ke lesson, video 206 | Lulus |
+| U9 | Guest pilih lesson -> login student | Redirect kembali ke lesson, video 206 | Lulus |
 | U11 | Student membuka `/admin` | Halaman 403 | Lulus |
 
 ### 4.2 Manajemen course & lesson (admin)
@@ -92,10 +92,10 @@ Pengujian memakai database terpisah `afindo_qa` karena skrip membuat dan menghap
 |---|---|---|---|
 | D4 | Upload video via endpoint XHR | 200, file di disk private, status `ready` | Lulus |
 | D5 | Upload file non-video | 422, status lesson tidak berubah | Lulus |
-| D6 | Stream video + HTTP Range | 200 `video/mp4`; Range → 206 | Lulus |
+| D6 | Stream video + HTTP Range | 200 `video/mp4`; Range -> 206 | Lulus |
 | D7 | Student stream video course draft | 403 | Lulus |
 | D8 | Admin preview video course draft | Admin 200, student 403 | Lulus |
-| U5 | Upload dari browser dengan progress bar | Progress tampil (`Mengunggah… 11%`), lalu badge Siap + preview video | Lulus |
+| U5 | Upload dari browser dengan progress bar | Progress tampil (`Mengunggah... 11%`), lalu badge Siap + preview video | Lulus |
 | U10 | Putar video di browser student | `currentTime` berjalan (1,46 s) | Lulus |
 
 ### 4.4 Batasan akses & keamanan
@@ -120,7 +120,7 @@ Pengujian memakai database terpisah `afindo_qa` karena skrip membuat dan menghap
 
 ### 4.6 Regression test (Pest)
 
-89 test dijalankan ulang di MySQL 8.4.9 (bukan SQLite in-memory): **89 lulus, 315 assertion, 12,9 detik**. Cakupan: akses per role, CRUD course & lesson, reorder, upload/ganti/hapus video & thumbnail, streaming + HTTP Range, alur guest → login → lesson, test bawaan Breeze, serta 26 test validasi brief (A1.1–A1.5) di `tests/Feature/AssessmentBriefValidationTest.php`.
+89 test dijalankan ulang di MySQL 8.4.9 (bukan SQLite in-memory): **89 lulus, 315 assertion, 12,9 detik**. Cakupan: akses per role, CRUD course & lesson, reorder, upload/ganti/hapus video & thumbnail, streaming + HTTP Range, alur guest -> login -> lesson, test bawaan Breeze, serta 26 test validasi brief (A1.1-A1.5) di `tests/Feature/AssessmentBriefValidationTest.php`.
 
 ## 5. Temuan
 
@@ -128,7 +128,7 @@ Pengujian memakai database terpisah `afindo_qa` karena skrip membuat dan menghap
 
 Catatan/observasi (bukan bug, sudah terdokumentasi sebagian di README/design doc):
 
-1. **Thumbnail tidak punya fallback bila file hilang.** Saat database dan isi `storage/app/public/thumbnails` tidak sinkron, gambar course gagal dimuat (request `/storage/...` → 403 dari route signed-URL) dan hanya muncul ikon rusak. Saran kecil: tampilkan placeholder di komponen `x-course-thumbnail` bila file tidak ada.
+1. **Thumbnail tidak punya fallback bila file hilang.** Saat database dan isi `storage/app/public/thumbnails` tidak sinkron, gambar course gagal dimuat (request `/storage/...` -> 403 dari route signed-URL) dan hanya muncul ikon rusak. Saran kecil: tampilkan placeholder di komponen `x-course-thumbnail` bila file tidak ada.
 2. **Font memakai CDN eksternal** (`fonts.bunny.net`). Saat jaringan membatasi domain tersebut, halaman tetap tampil dengan font fallback, tetapi tampilan tidak persis seperti screenshot. Untuk demo offline, pertimbangkan self-host font Geist.
 3. **Batas upload mengikuti PHP** (bawaan 2 MB). Untuk demo upload besar, README sudah menyediakan perintah `php -S` dengan `-d upload_max_filesize=512M`; skrip QA UI memakai cara ini.
 4. **Status `uploading` bisa tertinggal** jika proses PHP mati di tengah upload (sudah tercatat di bagian keterbatasan design doc); admin cukup mengunggah ulang.

@@ -1,6 +1,6 @@
-# Dokumen Desain — Afindo Learn
+# Dokumen Desain: Afindo Learn
 
-Dokumen ini menjelaskan rancangan sistem, model data, alur utama, dan keputusan UI/UX untuk aplikasi e-learning sederhana (Technical Assessment, Track A — Web Developer).
+Dokumen ini menjelaskan rancangan sistem, model data, alur utama, dan keputusan UI/UX untuk aplikasi e-learning sederhana (Technical Assessment, Track A: Web Developer).
 
 Daftar isi:
 
@@ -102,11 +102,11 @@ resources/
 
 | Halaman / aksi | Guest | Student | Admin |
 |---|---|---|---|
-| Beranda, katalog, detail course (published) | ✅ | ✅ | ✅ |
+| Beranda, katalog, detail course (published) | Ya | Ya | Ya |
 | Detail course draft | 404 | 404 | lewat area admin |
-| Halaman player lesson | redirect ke login, lalu kembali ke lesson | ✅ (course published) | ✅ (course published); video course draft dipratinjau di halaman edit lesson |
-| Stream file video | redirect ke login | ✅ course published / 403 course draft | ✅ |
-| Area `/admin/*` (CRUD, reorder, upload) | redirect ke login | 403 | ✅ |
+| Halaman player lesson | redirect ke login, lalu kembali ke lesson | Ya (course published) | Ya (course published); video course draft dipratinjau di halaman edit lesson |
+| Stream file video | redirect ke login | Ya course published / 403 course draft | Ya |
+| Area `/admin/*` (CRUD, reorder, upload) | redirect ke login | 403 | Ya |
 
 Penegakan akses:
 
@@ -302,7 +302,7 @@ File desain: [design/afindo-learn.figcraft](../design/afindo-learn.figcraft) (Fi
 
 | Token | Nilai | Pemakaian |
 |---|---|---|
-| Font | Geist (400–700) | Semua teks |
+| Font | Geist (400-700) | Semua teks |
 | Warna utama | Tailwind `blue` (tombol `blue-600`) | Tombol utama, link, item aktif |
 | Netral | Tailwind `zinc` (dipetakan ke `gray-*`) | Teks, border, latar |
 | Gelap | `zinc-900` | Hero beranda, header detail course |
@@ -315,7 +315,7 @@ Komponen Blade yang dipakai ulang: `x-card`, `x-badge`, `x-course-card`, `x-cour
 ### Responsive
 
 - Navbar berubah menjadi menu hamburger di bawah 768px.
-- Grid course: 1 kolom (HP) → 2 (tablet) → 3 (desktop).
+- Grid course: 1 kolom (HP), 2 (tablet), 3 (desktop).
 - Tabel admin berubah menjadi daftar kartu di HP.
 - Player: daftar materi pindah ke bawah video di HP; di desktop menempel di samping.
 - Halaman login/daftar: foto hanya tampil di layar lebar.
