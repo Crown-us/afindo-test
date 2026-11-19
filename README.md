@@ -20,7 +20,7 @@ Admin mengelola course dan lesson berupa video; student menjelajahi katalog, mem
 - [Batas upload video](#batas-upload-video)
 - [Testing dan QA](#testing-dan-qa)
 - [Halaman dan route](#halaman-dan-route)
-- [Dokumentasi desain](#dokumentasi-desain)
+- [Dokumentasi](#dokumentasi)
 - [Troubleshooting](#troubleshooting)
 - [Keterbatasan](#keterbatasan)
 - [Kredit](#kredit)
@@ -42,6 +42,8 @@ Beberapa keputusan penting:
 - Thumbnail course disimpan di disk **public** karena bukan data sensitif dan perlu tampil cepat untuk guest.
 - Halaman dirender server dengan Blade, tanpa SPA dan tanpa API publik terpisah.
 - Course berstatus **draft** tidak muncul di katalog dan tidak bisa dibuka student (404).
+
+Pemetaan tiap poin brief ke implementasi dan test ada di [docs/BRIEF-COMPLIANCE.md](docs/BRIEF-COMPLIANCE.md).
 
 ## Fitur
 
@@ -277,6 +279,8 @@ Data demo berisi 4 course dan 12 lesson:
 - 3 course published dengan video contoh di setiap lesson.
 - 1 course draft tanpa video, untuk mencoba alur upload.
 
+Panduan langkah demo ada di [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md).
+
 Mengembalikan data ke kondisi awal:
 
 ```bash
@@ -356,14 +360,19 @@ Skrip QA membuat dan menghapus data, jadi jalankan pada database khusus pengujia
 
 Route auth bawaan Breeze (`/login`, `/register`, lupa password, verifikasi email, profil) juga aktif.
 
-## Dokumentasi desain
+## Dokumentasi
 
-- **[docs/Dokumen-Desain-Afindo-Learn.pdf](docs/Dokumen-Desain-Afindo-Learn.pdf)**: dokumen desain siap baca (system design, ERD, flowchart, sequence, UI/UX, asumsi, keterbatasan).
-- **[docs/DESIGN.md](docs/DESIGN.md)**: sumber Markdown dengan diagram Mermaid.
-- **[design/afindo-learn.figcraft](design/afindo-learn.figcraft)**: file desain UI/UX (design system, 9 layar desktop, 3 layar mobile).
-- **[design/afindo-learn-preview.pdf](design/afindo-learn-preview.pdf)**: ringkasan visual 13 halaman dari file desain.
-- **[design/preview/](design/preview/)**: preview PNG per layar.
-- **[docs/qa/TEST-PLAN.md](docs/qa/TEST-PLAN.md)**: laporan QA end-to-end.
+| Dokumen | Isi |
+|---|---|
+| [docs/DESIGN.md](docs/DESIGN.md) | System design, ERD, alur, daftar route, UI/UX, asumsi, keterbatasan, dan catatan keamanan |
+| [docs/Dokumen-Desain-Afindo-Learn.pdf](docs/Dokumen-Desain-Afindo-Learn.pdf) | Versi PDF dari dokumen desain. Snapshot, versi Markdown tetap menjadi sumber terbaru |
+| [docs/BRIEF-COMPLIANCE.md](docs/BRIEF-COMPLIANCE.md) | Matriks kepatuhan tiap poin brief ke implementasi, test, dan dokumen |
+| [docs/DEMO-GUIDE.md](docs/DEMO-GUIDE.md) | Panduan demo 5 sampai 10 menit, termasuk skenario dan troubleshooting |
+| [docs/qa/TEST-PLAN.md](docs/qa/TEST-PLAN.md) | Laporan QA 139 pemeriksaan, matriks skenario, dan screenshot |
+| [design/afindo-learn.figcraft](design/afindo-learn.figcraft) | File desain UI/UX (design system, 9 layar desktop, 3 layar mobile) |
+| [design/afindo-learn-preview.pdf](design/afindo-learn-preview.pdf) | Ringkasan visual 13 halaman dari file desain |
+| [design/preview/](design/preview/) | Preview PNG per layar |
+| [tests/e2e/README.md](tests/e2e/README.md) | Cara menjalankan skrip QA HTTP dan browser |
 
 ## Troubleshooting
 

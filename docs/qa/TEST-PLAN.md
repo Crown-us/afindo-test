@@ -6,6 +6,8 @@ Dokumen ini mencatat rencana pengujian, skenario yang dijalankan, dan hasil ekse
 - **Hasil akhir:** **139/139 pemeriksaan lulus** (89 Pest + 35 HTTP + 15 browser E2E), tanpa bug fungsional pada alur wajib.
 - **Database pengujian:** MySQL `afindo_qa` (terpisah dari database demo/dev), di-seed dengan data demo yang sama (`php artisan migrate:fresh --seed`).
 
+Dokumen terkait: [matriks kepatuhan brief](../BRIEF-COMPLIANCE.md) dan [panduan demo](../DEMO-GUIDE.md).
+
 ## 1. Environment pengujian
 
 | Komponen | Versi / keterangan |

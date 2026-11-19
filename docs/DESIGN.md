@@ -14,6 +14,7 @@ Daftar isi:
 8. [UI/UX](#8-uiux)
 9. [Asumsi](#9-asumsi)
 10. [Keterbatasan dan yang belum dikerjakan](#10-keterbatasan-dan-yang-belum-dikerjakan)
+11. [Catatan keamanan](#11-catatan-keamanan)
 
 ---
 
@@ -287,6 +288,64 @@ Ditambah route auth bawaan Breeze (`/login`, `/register`, lupa password, profil)
 
 Tidak ada API publik terpisah. Halaman dirender server dengan Blade; dua endpoint JSON yang ada (`POST /admin/lessons/{lesson}/video` dan `PATCH /admin/courses/{course}/lessons/reorder`) hanya dipakai internal oleh halaman admin dan tetap memakai session + CSRF, bukan token API. Karena itu API design tidak relevan untuk track ini.
 
+### 7.1 Endpoint JSON internal
+
+Dua endpoint berikut bukan API publik. Dipanggil dari halaman admin yang sudah login, memakai session dan CSRF (`X-CSRF-TOKEN`), dan tidak memakai token API.
+
+#### POST /admin/lessons/{lesson}/video
+
+Upload video untuk satu lesson.
+
+- Content-Type: `multipart/form-data`
+- Field: `video` (MP4, WebM, atau OGG)
+- Batas ukuran: nilai terkecil antara 500 MB dan batas PHP
+- Middleware: `auth`, `role:admin`
+
+Contoh request:
+
+```http
+POST /admin/lessons/12/video HTTP/1.1
+Content-Type: multipart/form-data; boundary=...
+X-CSRF-TOKEN: ...
+Accept: application/json
+
+--boundary
+Content-Disposition: form-data; name="video"; filename="materi.mp4"
+Content-Type: video/mp4
+...
+```
+
+Response berhasil:
+
+```json
+{"message":"Video berhasil diunggah."}
+```
+
+Response validasi gagal (422):
+
+```json
+{"message":"Video harus berupa file bertipe: video/mp4, video/webm, video/ogg.","errors":{"video":["..."]}}
+```
+
+Efek: status lesson menjadi `uploading`, lalu `ready` jika file tersimpan, atau `failed` jika penyimpanan gagal. File video lama dihapus setelah file baru berhasil disimpan.
+
+#### PATCH /admin/courses/{course}/lessons/reorder
+
+Menyimpan urutan lesson.
+
+- Content-Type: `application/json`
+- Body: `{"lessons":[3,1,2]}`
+- Aturan: daftar harus berisi semua lesson milik course tersebut, tanpa duplikat, dan semuanya milik course di URL
+- Middleware: `auth`, `role:admin`
+
+Response berhasil:
+
+```json
+{"message":"Urutan lesson disimpan."}
+```
+
+Response jika daftar tidak lengkap, duplikat, atau berisi lesson dari course lain: `422` dengan pesan validasi.
+
 ## 8. UI/UX
 
 File desain: [design/afindo-learn.figcraft](../design/afindo-learn.figcraft) (FigCraft). Isinya tiga halaman: **Design System** (palet warna sebagai paint style, skala tipografi, komponen seperti Button, Badge, Input, Navbar, CourseCard), **Desktop** (9 layar, lebar 1280px), dan **Mobile** (3 layar, lebar 375px). Layar memakai instance komponen, jadi perubahan pada komponen ikut ke semua layar. Preview PNG per layar ada di [design/preview/](../design/preview/), dan ringkasan visualnya tersedia sebagai PDF di [design/afindo-learn-preview.pdf](../design/afindo-learn-preview.pdf). Di file desain, font Geist diganti Inter karena Geist tidak tersedia di FigCraft.
@@ -369,3 +428,35 @@ Screenshot upload diambil dengan batas upload PHP dinaikkan (lihat README, bagia
 - **`controlsList="nodownload"` bukan DRM.** Video tetap bisa diambil oleh user yang sudah berhak menontonnya (mis. lewat developer tools); proteksi yang ada adalah otorisasi akses.
 - **Verifikasi email belum diaktifkan** (User tidak mengimplementasikan `MustVerifyEmail`); fitur bawaan Breeze tetap ada di kode.
 - **Pengujian otomatis** default memakai SQLite in-memory agar cepat. Seluruh migrasi, seeder, dan 89 test juga sudah dijalankan di MySQL 8.4 dan lolos.
+
+## 11. Catatan keamanan
+
+### Kontrol akses
+
+- Halaman yang butuh login memakai middleware `auth`; seluruh route `/admin` memakai `role:admin`.
+- Streaming video memakai `LessonPolicy`: admin selalu boleh, student hanya untuk course published. Course draft menghasilkan 404 di halaman publik dan 403 di route video untuk student.
+- Route lesson memakai `scopeBindings()`, jadi lesson dari course lain di URL menghasilkan 404.
+- Kolom `role` tidak fillable. Register publik selalu menghasilkan student.
+
+### Penyimpanan video
+
+- File video disimpan di disk `local` (`storage/app/private`), di luar document root.
+- Route `/storage/{path}` hanya melayani file dengan signed URL. Tanpa signature, request mendapat 403.
+- Streaming memakai `BinaryFileResponse` yang mendukung HTTP Range, jadi video bisa di-seek tanpa membuka file langsung.
+- Nama file disimpan acak oleh `store()`. Nama asli hanya dipakai sebagai metadata.
+
+### Input dan output
+
+- Semua form memakai CSRF. Request JSON dari halaman admin mengirim `X-CSRF-TOKEN`.
+- Validasi input ada di FormRequest: judul, deskripsi, status enum, thumbnail, dan file video (tipe serta ukuran).
+- Status course dan video divalidasi lewat PHP Enum, tidak menerima string bebas.
+- Output Blade di-escape secara default. Judul dan deskripsi dari admin tidak dirender sebagai HTML mentah.
+- Password di-hash oleh cast `hashed`; login memakai rate limiter bawaan Breeze.
+
+### Catatan produksi
+
+- Set `APP_ENV=production` dan `APP_DEBUG=false` saat demo publik.
+- Set `APP_URL` memakai HTTPS. Jika di belakang reverse proxy, aktifkan `trustProxies` seperti di `bootstrap/app.php`.
+- Ganti password akun demo sebelum membuka aplikasi untuk publik, atau lindungi area admin dengan akses tambahan.
+- Jalankan `php artisan storage:link` dan pastikan folder `storage` serta `bootstrap/cache` writable oleh user web server.
+- Backup database dan folder `storage/app` secara berkala.
