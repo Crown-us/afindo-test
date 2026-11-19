@@ -12,6 +12,7 @@ Admin mengelola course dan lesson berupa video; student menjelajahi katalog, mem
 - [Alur pemakaian](#alur-pemakaian)
 - [Teknologi](#teknologi)
 - [Arsitektur dan struktur proyek](#arsitektur-dan-struktur-proyek)
+- [Diagram](#diagram)
 - [Kebutuhan](#kebutuhan)
 - [Instalasi](#instalasi)
 - [Konfigurasi](#konfigurasi)
@@ -168,6 +169,22 @@ File yang paling sering dibaca saat review:
 | `app/Http/Controllers/Admin/LessonController.php` | CRUD lesson dan reorder. |
 | `database/seeders/CourseSeeder.php` | Data demo course, lesson, dan video contoh. |
 | `routes/web.php` | Daftar route dan middleware. |
+
+## Diagram
+
+Gambar di bawah adalah hasil render dari diagram Mermaid di [docs/DESIGN.md](docs/DESIGN.md). Klik gambar untuk membuka ukuran penuh.
+
+| System design | ERD |
+|---|---|
+| [![System design](docs/diagrams/01-system-design.png)](docs/diagrams/01-system-design.png) | [![ERD](docs/diagrams/02-erd.png)](docs/diagrams/02-erd.png) |
+
+| Alur pengelolaan course dan lesson | Sequence menonton video |
+|---|---|
+| [![Alur pengelolaan](docs/diagrams/03-flowchart-admin.png)](docs/diagrams/03-flowchart-admin.png) | [![Sequence menonton](docs/diagrams/06-sequence-watch.png)](docs/diagrams/06-sequence-watch.png) |
+
+| Sequence upload video | Status video |
+|---|---|
+| [![Sequence upload](docs/diagrams/04-sequence-upload.png)](docs/diagrams/04-sequence-upload.png) | [![Status video](docs/diagrams/05-state-video.png)](docs/diagrams/05-state-video.png) |
 
 ## Kebutuhan
 
