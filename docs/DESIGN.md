@@ -287,6 +287,8 @@ Ditambah route auth bawaan Breeze (`/login`, `/register`, lupa password, profil)
 
 ## 8. UI/UX
 
+File desain: [design/afindo-learn.figcraft](../design/afindo-learn.figcraft) (FigCraft). Isinya tiga halaman: **Design System** (palet warna sebagai paint style, skala tipografi, komponen seperti Button, Badge, Input, Navbar, CourseCard), **Desktop** (9 layar, lebar 1280px), dan **Mobile** (3 layar, lebar 375px). Layar memakai instance komponen, jadi perubahan pada komponen ikut ke semua layar. Preview PNG per layar ada di [design/preview/](../design/preview/). Di file desain, font Geist diganti Inter karena Geist tidak tersedia di FigCraft.
+
 ### Prinsip
 
 - **Familiar**: pola mengikuti platform kursus yang sudah dikenal (hero + katalog bergambar, halaman detail dengan kartu "Mulai belajar", player dengan daftar materi di samping).

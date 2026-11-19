@@ -22,6 +22,8 @@ Admin mengelola course dan lesson berupa video; student menjelajahi katalog lalu
 
 Detail rancangan (system design, ERD, flowchart/sequence, UI/UX, asumsi, keterbatasan): **[docs/Dokumen-Desain-Afindo-Learn.pdf](docs/Dokumen-Desain-Afindo-Learn.pdf)** (versi PDF siap baca) atau [docs/DESIGN.md](docs/DESIGN.md) (sumber Markdown, diagram Mermaid tampil di GitHub).
 
+Desain UI/UX (design system + 9 layar desktop + 3 layar mobile) dibuat di FigCraft: **[design/afindo-learn.figcraft](design/afindo-learn.figcraft)**, dengan preview PNG per layar di [design/preview/](design/preview/).
+
 ## Teknologi
 
 | Teknologi | Alasan singkat |
@@ -150,6 +152,7 @@ resources/js/                 video-uploader.js, lesson-sorter.js (Alpine)
 resources/views/              admin/, student/, components/, layouts/
 database/seeders/             akun demo, course, video & foto contoh
 docs/DESIGN.md                dokumen desain
+design/                       file desain UI/UX FigCraft + preview PNG
 ```
 
 ## Keterbatasan
