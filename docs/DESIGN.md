@@ -285,9 +285,11 @@ sequenceDiagram
 
 Ditambah route auth bawaan Breeze (`/login`, `/register`, lupa password, profil).
 
+Tidak ada API publik terpisah. Halaman dirender server dengan Blade; dua endpoint JSON yang ada (`POST /admin/lessons/{lesson}/video` dan `PATCH /admin/courses/{course}/lessons/reorder`) hanya dipakai internal oleh halaman admin dan tetap memakai session + CSRF, bukan token API. Karena itu API design tidak relevan untuk track ini.
+
 ## 8. UI/UX
 
-File desain: [design/afindo-learn.figcraft](../design/afindo-learn.figcraft) (FigCraft). Isinya tiga halaman: **Design System** (palet warna sebagai paint style, skala tipografi, komponen seperti Button, Badge, Input, Navbar, CourseCard), **Desktop** (9 layar, lebar 1280px), dan **Mobile** (3 layar, lebar 375px). Layar memakai instance komponen, jadi perubahan pada komponen ikut ke semua layar. Preview PNG per layar ada di [design/preview/](../design/preview/). Di file desain, font Geist diganti Inter karena Geist tidak tersedia di FigCraft.
+File desain: [design/afindo-learn.figcraft](../design/afindo-learn.figcraft) (FigCraft). Isinya tiga halaman: **Design System** (palet warna sebagai paint style, skala tipografi, komponen seperti Button, Badge, Input, Navbar, CourseCard), **Desktop** (9 layar, lebar 1280px), dan **Mobile** (3 layar, lebar 375px). Layar memakai instance komponen, jadi perubahan pada komponen ikut ke semua layar. Preview PNG per layar ada di [design/preview/](../design/preview/), dan ringkasan visualnya tersedia sebagai PDF di [design/afindo-learn-preview.pdf](../design/afindo-learn-preview.pdf). Di file desain, font Geist diganti Inter karena Geist tidak tersedia di FigCraft.
 
 ### Prinsip
 
@@ -366,4 +368,4 @@ Screenshot upload diambil dengan batas upload PHP dinaikkan (lihat README, bagia
 - **Status `uploading` bisa tertinggal** jika proses PHP mati di tengah penyimpanan; admin cukup mengunggah ulang.
 - **`controlsList="nodownload"` bukan DRM.** Video tetap bisa diambil oleh user yang sudah berhak menontonnya (mis. lewat developer tools); proteksi yang ada adalah otorisasi akses.
 - **Verifikasi email belum diaktifkan** (User tidak mengimplementasikan `MustVerifyEmail`); fitur bawaan Breeze tetap ada di kode.
-- **Pengujian otomatis** default memakai SQLite in-memory agar cepat. Seluruh migrasi, seeder, dan 63 test juga sudah dijalankan di MySQL 8.4 dan lolos.
+- **Pengujian otomatis** default memakai SQLite in-memory agar cepat. Seluruh migrasi, seeder, dan 89 test juga sudah dijalankan di MySQL 8.4 dan lolos.

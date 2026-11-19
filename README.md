@@ -22,7 +22,7 @@ Admin mengelola course dan lesson berupa video; student menjelajahi katalog lalu
 
 Detail rancangan (system design, ERD, flowchart/sequence, UI/UX, asumsi, keterbatasan): **[docs/Dokumen-Desain-Afindo-Learn.pdf](docs/Dokumen-Desain-Afindo-Learn.pdf)** (versi PDF siap baca) atau [docs/DESIGN.md](docs/DESIGN.md) (sumber Markdown, diagram Mermaid tampil di GitHub).
 
-Desain UI/UX (design system + 9 layar desktop + 3 layar mobile) dibuat di FigCraft: **[design/afindo-learn.figcraft](design/afindo-learn.figcraft)**, dengan preview PNG per layar di [design/preview/](design/preview/).
+Desain UI/UX (design system + 9 layar desktop + 3 layar mobile) dibuat di FigCraft: **[design/afindo-learn.figcraft](design/afindo-learn.figcraft)**, dengan preview PNG per layar di [design/preview/](design/preview/) dan ringkasan PDF 13 halaman di **[design/afindo-learn-preview.pdf](design/afindo-learn-preview.pdf)**.
 
 ## Teknologi
 
@@ -34,7 +34,9 @@ Desain UI/UX (design system + 9 layar desktop + 3 layar mobile) dibuat di FigCra
 | Laravel Breeze | Scaffolding login/register/profil resmi Laravel. |
 | Tailwind CSS | Desain konsisten lewat token warna & font di satu konfigurasi. |
 | SortableJS | Drag & drop urutan lesson, ringan dan mendukung layar sentuh. |
-| Pest | Feature test (63 test). |
+| Pest | Feature test (89 test). |
+
+Tidak ada API publik terpisah: halaman dirender Blade, dan dua endpoint JSON (upload video, reorder lesson) hanya dipakai internal halaman admin dengan session + CSRF.
 
 ## Kebutuhan
 
@@ -138,6 +140,10 @@ php artisan test
 ```
 
 Test memakai SQLite in-memory (lihat `phpunit.xml`), jadi tidak menyentuh database lokal. Untuk menjalankannya di MySQL, buat database kosong (mis. `afindo_elearning_test`) lalu set `DB_CONNECTION=mysql` dan `DB_DATABASE=afindo_elearning_test` sebagai environment variable sebelum `php artisan test`; seluruh test sudah diverifikasi lolos di MySQL 8.4. Cakupan utama: akses per role, CRUD course & lesson, reorder, upload/ganti/hapus video & thumbnail, streaming video (termasuk HTTP Range), dan alur guest → login → kembali ke lesson.
+
+### QA end-to-end
+
+Selain Pest, ada QA HTTP dan browser (Playwright) yang dijalankan terhadap aplikasi + MySQL: **139 pemeriksaan, semuanya lulus**. Laporan lengkap (matriks skenario + screenshot) ada di **[docs/qa/TEST-PLAN.md](docs/qa/TEST-PLAN.md)**; skripnya di `tests/e2e/` dan bisa dijalankan ulang (lihat [tests/e2e/README.md](tests/e2e/README.md)).
 
 ## Struktur singkat
 
